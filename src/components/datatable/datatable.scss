@@ -1,0 +1,100 @@
+.datatable {
+
+    height :600px;
+    padding: 20px;
+
+    .datatableTitle {
+
+        width: 100%;
+        font-size: 24px;
+        color: gray;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+
+        .link {
+            text-decoration: none;
+            font-size: 16px;
+            border-radius: 5px;
+            color:green;
+            border: 1px solid green;
+            padding: 5px;
+            font-weight: 400;
+            cursor: pointer;
+
+        }
+    }
+
+    .CellWithImg{
+
+        display: flex;
+        align-items: center;
+       
+         .CellImage{
+            margin-right: 10px;
+            height: 32px;
+            width: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+    }
+
+    .CellWithStatus {
+
+        padding: 5px;
+        border-radius: 5px;
+        font-weight: 900;
+
+        &.Approved {
+
+            color: green;
+            background-color: lightgreen
+        }
+
+        &.Open {
+
+            color: red;
+            background-color: lightblue
+        }
+
+        &.Submitted {
+
+            color: red;
+            background-color: lightpink
+        }
+
+        &.Pending {
+
+            color: pink;
+            background-color: lightyellow
+        }
+
+
+    }
+
+    .cellAction{
+        display: flex;
+        align-items: center;
+        gap :15px;
+
+
+        .viewButton{
+            
+            background-color: rgba(128, 128, 128, 0.338);
+            color: darkblue;
+            border-radius: 5px;
+            border: 1px dotted rgba(0, 0, 139, 0.417);
+            cursor: pointer;
+
+        }
+
+        .deleteButton{
+            border-radius: 5px;
+            color: brown;
+            border: 1px dotted rgba(139, 0, 49, 0.328);
+            background-color: rgba(165, 42, 42, 0.144);
+            cursor: pointer;
+        }
+    }
+}

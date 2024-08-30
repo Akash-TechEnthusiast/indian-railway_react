@@ -1,25 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
 
+import NoPage from "./pages/nopage/NoPage";
+import Home from "./pages/home/Home";
+import Login from "./pages/login/Login";
+
+import "./styles/dark.scss"
+
+import React, { useState } from 'react';
+// import React, { Component }  from 'react';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 function App() {
+
+  const [token, setToken] = useState();
+
+  const [dark, setDark] = useState(false);
+
+
+  if (!token) {
+    return <Login setToken={setToken} />
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+
+
+    <div className={dark ? "app dark" : "app"}>
+
+      <BrowserRouter>
+        <Routes>
+
+          <Route path="/">
+            <Route index element={<Home />} />
+
+            <Route path="*" element={<NoPage />} />
+
+          </Route>
+
+        </Routes>
+      </BrowserRouter>
+
+
     </div>
   );
 }
 
 export default App;
+//      <Home />
