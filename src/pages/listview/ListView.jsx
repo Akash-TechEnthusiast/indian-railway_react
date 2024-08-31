@@ -15,7 +15,7 @@ const ListView = () => {
         <Datatable />
       </div>
 
-      </div>
+    </div>
 
   )
 }

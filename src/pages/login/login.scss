@@ -1,5 +1,63 @@
-.login-wrapper {
+// Define color variables for easier customization
+$primary-color: #3498db;
+$hover-color: #2980b9;
+$error-color: red;
+
+// Nesting for better structure
+.login-container {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
+    height: 100vh;
+    background-color: #f4f4f4;
+
+    .login-form {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        width: 300px;
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+
+            label {
+                display: block;
+                margin-bottom: 5px;
+            }
+
+            input {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+        }
+
+        .error {
+            color: $error-color;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: $primary-color;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+
+            &:hover {
+                background-color: $hover-color;
+            }
+        }
+    }
 }
