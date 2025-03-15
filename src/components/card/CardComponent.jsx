@@ -1,9 +1,18 @@
 import React from "react";
-import { Card, CardContent, CardMedia, Typography, Button } from "@mui/material";
+import { Card, CardContent, CardMedia, Typography } from "@mui/material";
 
-const CardComponent = ({ title, description, image }) => {
+const CardComponent = ({ title, description, image, onSelect, isSelected }) => {
     return (
-        <Card sx={{ maxWidth: 345, boxShadow: 3, borderRadius: 2 }}>
+        <Card
+            sx={{
+                maxWidth: 345,
+                boxShadow: 3,
+                borderRadius: 2,
+                border: isSelected ? "3px solid blue" : "1px solid gray", // ✅ Individual selection
+                cursor: "pointer"
+            }}
+            onClick={onSelect} // ✅ Clicking toggles selection
+        >
             <CardMedia component="img" height="200" image={image} alt={title} />
             <CardContent>
                 <Typography gutterBottom variant="h6" component="div">
@@ -12,9 +21,6 @@ const CardComponent = ({ title, description, image }) => {
                 <Typography variant="body2" color="text.secondary">
                     {description}
                 </Typography>
-                <Button variant="contained" color="primary" sx={{ mt: 2 }}>
-                    Learn More
-                </Button>
             </CardContent>
         </Card>
     );
