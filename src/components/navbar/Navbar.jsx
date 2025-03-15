@@ -4,8 +4,19 @@ import NightsStayOutlinedIcon from '@mui/icons-material/NightsStayOutlined';
 import ListOutlinedIcon from '@mui/icons-material/ListOutlined';
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
 import LanguageOutlinedIcon from '@mui/icons-material/LanguageOutlined';
+import LoginSharpIcon from '@mui/icons-material/LoginSharp';
+import { useNavigate } from "react-router-dom";
 import "./navbar.scss";
 const Navbar = () => {
+
+       const navigate = useNavigate();
+
+       const handleLogout = () => {
+              localStorage.removeItem("token"); // 🔥 Remove token
+              navigate("/"); // 🔥 Redirect to login page
+       };
+
+
        return (
               <div className="navbar">
                      <div className="wrapper">
@@ -45,6 +56,10 @@ const Navbar = () => {
                                           <img src=
                                                  "https://media.geeksforgeeks.org/wp-content/uploads/20190506164011/logo3.png"
                                                  alt="GeeksforGeeks logo" className="avatar"></img>
+                                   </div>
+
+                                   <div className="item">
+                                          <LoginSharpIcon onClick={handleLogout} className="icon" />
                                    </div>
 
 

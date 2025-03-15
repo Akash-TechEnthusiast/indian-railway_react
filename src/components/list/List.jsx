@@ -7,6 +7,9 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import { useEffect, useState } from "react";
+
+import axiosInstance from "../../components/service_urls/AxiosInstance";
 
 const rows = [
   {
@@ -51,7 +54,28 @@ const rows = [
   },
 ];
 
+
+
+
 const List = () => {
+
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axiosInstance.get("/products"); // ✅ Interceptor adds token here
+        setData(response.data);
+        console.log("Fetched Data:", response.data);
+      } catch (error) {
+        //console.error("Error fetching data:", error.response?.data || error.message);
+      }
+    };
+    fetchData();
+  }, []);
+
+
+
   return (
     <div className="list">
       <TableContainer component={Paper} className="table">
@@ -76,7 +100,7 @@ const List = () => {
                 <TableCell className="tableCell">
                   {" "}
                   <div className="cellWrapper">
-                    <img src={row.imgurl} alt="W3Schools.com" className="image"/>
+                    <img src={row.imgurl} alt="W3Schools.com" className="image" />
                     {row.product}
                   </div>
                 </TableCell>

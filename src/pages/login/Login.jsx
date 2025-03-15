@@ -1,36 +1,39 @@
-
-
 //import "./login.scss";
 
-
-
 import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import './login.scss'; // Optional: Add styling in a separate CSS file
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSubmit = (e) => {
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Basic validation
-    if (!email || !password) {
-      setErrorMessage('Please fill in both fields');
+    if (!username || !password) {
+      setErrorMessage("Both fields are required.");
       return;
     }
-
-    // Clear error message
-    setErrorMessage('');
-
-    // Handle authentication here (e.g., call your backend API)
-    console.log('Login Submitted: ', { email, password });
-
-    // For now, just reset the form fields
-    setEmail('');
-    setPassword('');
+    try {
+      const response = await axios.post("http://localhost:9191/authenticate", {
+        username,
+        password,
+      });
+      setErrorMessage("");
+      localStorage.setItem("token", response.data.token);
+      navigate("/dashboard");
+    } catch (error) {
+      setErrorMessage("Invalid credentials!");
+    }
   };
+
+
 
   return (
     <div className="login-container">
@@ -40,9 +43,9 @@ const Login = () => {
         <div className="form-group">
           <label>Email:</label>
           <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             required
           />
         </div>
