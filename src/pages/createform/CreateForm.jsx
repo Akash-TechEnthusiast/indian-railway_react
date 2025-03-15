@@ -86,31 +86,31 @@ const CreateForm = () => {
                         <Grid container spacing={2}>
                             {/* Name Field */}
                             <Grid item xs={12} md={4}>
-                                <TextField fullWidth label="Name" name="name" value={formData.name} onChange={handleChange} required />
+                                <TextField fullWidth label="Name" size="small" name="name" value={formData.name} onChange={handleChange} required />
                             </Grid>
 
                             <Grid item xs={12} md={4}>
-                                <TextField fullWidth label="Name" name="name" value={formData.name} onChange={handleChange} required />
+                                <TextField fullWidth label="Name" size="small" name="name" value={formData.name} onChange={handleChange} required />
                             </Grid>
 
                             <Grid item xs={12} md={4}>
-                                <TextField fullWidth label="Name" name="name" value={formData.name} onChange={handleChange} required />
+                                <TextField fullWidth label="Name" size="small" name="name" value={formData.name} onChange={handleChange} required />
                             </Grid>
 
                             <Grid item xs={12} md={4}>
-                                <TextField fullWidth label="Name" name="name" value={formData.name} onChange={handleChange} required />
+                                <TextField fullWidth label="Name" size="small" name="name" value={formData.name} onChange={handleChange} required />
                             </Grid>
 
                             <Grid item xs={12} md={4}>
-                                <TextField fullWidth label="Name" name="name" value={formData.name} onChange={handleChange} required />
+                                <TextField fullWidth label="Name" size="small" name="name" value={formData.name} onChange={handleChange} required />
                             </Grid>
 
                             <Grid item xs={12} md={4}>
-                                <TextField fullWidth label="Name" name="name" value={formData.name} onChange={handleChange} required />
+                                <TextField fullWidth label="Name" size="small" name="name" value={formData.name} onChange={handleChange} required />
                             </Grid>
 
                             <Grid item xs={12} md={4}>
-                                <TextField fullWidth label="Name" name="name" value={formData.name} onChange={handleChange} required />
+                                <TextField fullWidth label="Name" size="small" name="name" value={formData.name} onChange={handleChange} required />
                             </Grid>
 
                             {/* Email Field with Icon */}
@@ -120,6 +120,7 @@ const CreateForm = () => {
                                     label="Email"
                                     name="email"
                                     type="email"
+                                    size="small"
                                     value={formData.email}
                                     onChange={handleChange}
                                     required
@@ -139,6 +140,7 @@ const CreateForm = () => {
                                     fullWidth
                                     label="Password"
                                     name="password"
+                                    size="small"
                                     type={showPassword ? "text" : "password"}
                                     value={formData.password}
                                     onChange={handleChange}
@@ -160,9 +162,9 @@ const CreateForm = () => {
                                 <FormControl component="fieldset">
                                     <Typography>Gender</Typography>
                                     <RadioGroup row name="gender" value={formData.gender} onChange={handleChange}>
-                                        <FormControlLabel value="male" control={<Radio />} label="Male" />
-                                        <FormControlLabel value="female" control={<Radio />} label="Female" />
-                                        <FormControlLabel value="other" control={<Radio />} label="Other" />
+                                        <FormControlLabel value="male" control={<Radio size="small" />} label="Male" />
+                                        <FormControlLabel value="female" control={<Radio size="small" />} label="Female" />
+                                        <FormControlLabel value="other" control={<Radio size="small" />} label="Other" />
                                     </RadioGroup>
                                 </FormControl>
                             </Grid>
@@ -186,6 +188,7 @@ const CreateForm = () => {
                                     fullWidth
                                     name="dob"
                                     type="date"
+                                    size="small"
                                     value={formData.dob}
                                     onChange={handleChange}
                                     InputLabelProps={{ shrink: true }}
@@ -202,7 +205,7 @@ const CreateForm = () => {
 
                             {/* File Upload */}
                             <Grid item xs={12} md={4}>
-                                <Button variant="contained" component="label" startIcon={<FileUpload />}>
+                                <Button variant="contained" size="small" component="label" startIcon={<FileUpload />}>
                                     Upload File
                                     <input type="file" hidden onChange={handleFileChange} />
                                 </Button>
@@ -210,7 +213,7 @@ const CreateForm = () => {
 
                             {/* Dropdown Select */}
                             <Grid item xs={12} md={4}>
-                                <FormControl fullWidth>
+                                <FormControl fullWidth size="small">
                                     <InputLabel>Country</InputLabel>
                                     <Select name="country" value={formData.country} onChange={handleChange}>
                                         <MenuItem value="India">India</MenuItem>
@@ -223,7 +226,7 @@ const CreateForm = () => {
                             {/* Checkbox */}
                             <Grid item xs={12} md={4}>
                                 <FormControlLabel
-                                    control={<Checkbox checked={formData.agreeTerms} onChange={handleChange} name="agreeTerms" />}
+                                    control={<Checkbox size="small" checked={formData.agreeTerms} onChange={handleChange} name="agreeTerms" />}
                                     label="I agree to the terms and conditions"
                                 />
                             </Grid>
@@ -231,14 +234,14 @@ const CreateForm = () => {
                             {/* Switch */}
                             <Grid item xs={12} md={4}>
                                 <FormControlLabel
-                                    control={<Switch checked={formData.notifications} onChange={handleChange} name="notifications" />}
+                                    control={<Switch size="small" checked={formData.notifications} onChange={handleChange} name="notifications" />}
                                     label="Receive Notifications"
                                 />
                             </Grid>
 
                             {/* Submit Button */}
                             <Grid item xs={12} md={4}>
-                                <Button type="submit" variant="contained" color="primary" fullWidth startIcon={<Send />}>
+                                <Button type="submit" size="small" variant="contained" color="primary" fullWidth startIcon={<Send />}>
                                     Submit
                                 </Button>
                             </Grid>
