@@ -8,6 +8,8 @@ import New from "./pages/new/New";
 import Single from "./pages/single/Single";
 import CardView from "./pages/cardview/CardView";
 
+import CreateForm from "./pages/createform/CreateForm";
+
 import "./styles/dark.scss"
 
 import React, { useState } from 'react';
@@ -35,7 +37,7 @@ function App() {
           <Route path="/">
             <Route index element={<Login />} />
 
-            <Route path="/dashboard" element={<CardView />} />
+            <Route path="/dashboard" element={<CreateForm />} />
 
             <Route path="user">
 
