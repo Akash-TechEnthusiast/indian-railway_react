@@ -33,9 +33,9 @@ function App() {
         <Routes>
 
           <Route path="/">
-            <Route index element={<CardView />} />
+            <Route index element={<Login />} />
 
-            <Route path="/dashboard" element={<Home />} />
+            <Route path="/dashboard" element={<CardView />} />
 
             <Route path="user">
 

@@ -1,10 +1,10 @@
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import "./cardview.scss";
-import { Grid, Container, Button } from "@mui/material";
 import CardComponent from "../../components/card/CardComponent";
-import React, { useState } from "react";
-import axios from "axios";
+import axiosInstance from "../../components/service_urls/AxiosInstance";
+import React, { useState, useEffect } from "react";
+import { Select, MenuItem, FormControl, InputLabel, Container, Grid, Button } from "@mui/material";
 
 const CardView = () => {
 
@@ -17,26 +17,56 @@ const CardView = () => {
         { id: 6, title: "Node.js", description: "A runtime for .", image: "https://fastly.picsum.photos/id/1/5000/3333.jpg?hmac=Asv2DU3rA_5D1xSe22xZK47WEAN0wjWeFOhzd13ujW4" }
     ]
 
+    const [customers, setCustomers] = useState([]); // Store customers
     const [selectedCards, setSelectedCards] = useState([]);
+    const [customerId, setCustomerId] = useState(""); // Store customer ID input
 
-    // Handle individual card selection/deselection
-    const handleSelect = (id) => {
+
+    useEffect(() => {
+        axiosInstance.get("/api/customers/fetch_all_customers")
+            .then(response => setCustomers(response.data))
+            .catch(error => console.error("Error fetching customers:", error));
+    }, []);
+
+    // Handle customer selection
+    const handleCustomerChange = (event) => {
+        setCustomerId(event.target.value);
+    };
+
+
+    // Handle card selection/deselection
+    const handleSelect = (card) => {
+        setSelectedCards((prevSelected) => {
+            const exists = prevSelected.find((c) => c.id === card.id);
+            return exists ? prevSelected.filter((c) => c.id !== card.id) : [...prevSelected, { ...card, quantity: 1 }];
+        });
+    };
+
+    // Handle quantity change
+    const handleQuantityChange = (id, change) => {
         setSelectedCards((prevSelected) =>
-            prevSelected.includes(id) ? prevSelected.filter((cardId) => cardId !== id) : [...prevSelected, id]
+            prevSelected.map((card) =>
+                card.id === id ? { ...card, quantity: Math.max(1, card.quantity + change) } : card
+            )
         );
     };
 
-    // Send selected cards to backend
+    // Send selected card objects & customer ID to backend
     const handleSubmit = async () => {
+        if (!customerId) {
+            alert("Please enter a customer ID!");
+            return;
+        }
+
         try {
-            const response = await axios.post("http://localhost:8080/api/cards", { selectedCards });
+            const payload = { customerId, selectedCards };
+            const response = await axiosInstance.post("/products/cards", payload);
             console.log("Response:", response.data);
             alert("Cards sent successfully!");
         } catch (error) {
             console.error("Error sending data:", error);
         }
     };
-
     return (
         <div className="home">
             <Sidebar />
@@ -44,23 +74,47 @@ const CardView = () => {
                 <Navbar />
 
                 <Container sx={{ py: 5 }}>
+                    {/* Input for Customer ID */}
+
+
+
+                    <FormControl fullWidth sx={{ mb: 3 }}>
+                        <InputLabel>Select Customer</InputLabel>
+                        <Select value={customerId} onChange={handleCustomerChange}>
+                            {customers.map((customer) => (
+                                <MenuItem key={customer.id} value={customer.id}>
+                                    {customer.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+
+                    {/* Display Cards */}
                     <Grid container spacing={3} justifyContent="center">
-                        {cardData.map((card) => (
-                            <Grid item key={card.id} xs={12} sm={6} md={4}>
-                                <CardComponent
-                                    {...card}
-                                    isSelected={selectedCards.includes(card.id)} // ✅ Check selection for each card
-                                    onSelect={() => handleSelect(card.id)} // ✅ Handle individual selection
-                                />
-                            </Grid>
-                        ))}
+                        {cardData.map((card) => {
+                            const selectedCard = selectedCards.find((c) => c.id === card.id);
+                            return (
+                                <Grid item key={card.id} xs={12} sm={6} md={4}>
+                                    <CardComponent
+                                        {...card}
+                                        isSelected={!!selectedCard}
+                                        quantity={selectedCard?.quantity || 1}
+                                        onSelect={() => handleSelect(card)}
+                                        onIncrement={() => handleQuantityChange(card.id, 1)}
+                                        onDecrement={() => handleQuantityChange(card.id, -1)}
+                                    />
+                                </Grid>
+                            );
+                        })}
                     </Grid>
+
+                    {/* Submit Button */}
                     <Button
                         variant="contained"
                         color="primary"
                         onClick={handleSubmit}
                         sx={{ mt: 3 }}
-                        disabled={selectedCards.length === 0} // ✅ Disable if no cards are selected
+                        disabled={selectedCards.length === 0 || !customerId} // Disable if no cards selected or no customer ID
                     >
                         Submit Selected Cards
                     </Button>
