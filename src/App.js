@@ -6,6 +6,7 @@ import ListView from "./pages/listview/ListView";
 import Payment from "./pages/payment/Payment";
 import New from "./pages/new/New";
 import Single from "./pages/single/Single";
+import CardView from "./pages/cardview/CardView";
 
 import "./styles/dark.scss"
 
@@ -32,7 +33,7 @@ function App() {
         <Routes>
 
           <Route path="/">
-            <Route index element={<Login />} />
+            <Route index element={<CardView />} />
 
             <Route path="/dashboard" element={<Home />} />
 
