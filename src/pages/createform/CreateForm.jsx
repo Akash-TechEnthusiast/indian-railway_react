@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import "./createform.scss";
+import axiosInstance from "../../components/service_urls/AxiosInstance";
 import {
     TextField,
     Button,
@@ -22,7 +23,7 @@ import {
     InputAdornment,
     Box
 } from "@mui/material";
-import { Email, Visibility, VisibilityOff, DateRange, FileUpload, Send } from "@mui/icons-material";
+import { Email, Visibility, VisibilityOff, DateRange, FileUpload, Send, Delete } from "@mui/icons-material";
 
 const CreateForm = () => {
     const [formData, setFormData] = useState({
@@ -48,10 +49,22 @@ const CreateForm = () => {
         });
     };
 
-    // Handle file selection
+
+
+    const [file, setFile] = useState(null);
+
     const handleFileChange = (event) => {
-        setFormData({ ...formData, file: event.target.files[0] });
+        const selectedFile = event.target.files[0];
+        if (selectedFile) {
+            setFile(selectedFile);
+        }
     };
+
+    const handleRemoveFile = () => {
+        setFile(null);
+    };
+
+
 
     // Handle slider change
     const handleSliderChange = (event, newValue) => {
@@ -59,11 +72,35 @@ const CreateForm = () => {
     };
 
     // Handle form submission
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log("Form Data Submitted:", formData);
-    };
 
+        const formDataToSend = {
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+            gender: formData.gender,
+            age: formData.age,
+            dob: formData.dob,
+            agreeTerms: formData.agreeTerms,
+            notifications: formData.notifications,
+            country: formData.country,
+        };
+
+        try {
+            const response = await axiosInstance.post("/api/student/create", formDataToSend, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            console.log("Data submitted successfully:", response.data);
+            alert("Form submitted successfully!");
+        } catch (error) {
+            console.error("Error submitting form:", error);
+            alert("Failed to submit form.");
+        }
+    };
     return (
 
 
@@ -204,12 +241,33 @@ const CreateForm = () => {
                             </Grid>
 
                             {/* File Upload */}
+
+
+
                             <Grid item xs={12} md={4}>
-                                <Button variant="contained" size="small" component="label" startIcon={<FileUpload />}>
+                                <Button
+                                    variant="contained"
+                                    size="small"
+                                    component="label"
+                                    startIcon={<FileUpload />}
+                                >
                                     Upload File
                                     <input type="file" hidden onChange={handleFileChange} />
                                 </Button>
+
+                                {/* Show Uploaded File Name and Remove Button */}
+                                {file && (
+                                    <Grid container alignItems="center" sx={{ mt: 1 }}>
+                                        <Typography variant="body2" sx={{ color: "gray", mr: 1 }}>
+                                            {file.name}
+                                        </Typography>
+                                        <IconButton size="small" onClick={handleRemoveFile}>
+                                            <Delete color="error" />
+                                        </IconButton>
+                                    </Grid>
+                                )}
                             </Grid>
+
 
                             {/* Dropdown Select */}
                             <Grid item xs={12} md={4}>

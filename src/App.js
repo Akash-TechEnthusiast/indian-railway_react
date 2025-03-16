@@ -2,6 +2,8 @@
 import NoPage from "./pages/nopage/NoPage";
 import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
+import ForgotPassword from "./pages/login/ForgotPassword";
+import Register from "./pages/login/Register";
 import ListView from "./pages/listview/ListView";
 import Payment from "./pages/payment/Payment";
 import New from "./pages/new/New";
@@ -38,6 +40,9 @@ function App() {
             <Route index element={<Login />} />
 
             <Route path="/dashboard" element={<CreateForm />} />
+
+            <Route path="/register" exact element={<Register />}></Route>
+            <Route path="/reset-password" exact element={<ForgotPassword />}></Route>
 
             <Route path="user">
 
