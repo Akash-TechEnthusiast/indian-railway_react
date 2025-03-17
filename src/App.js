@@ -3,6 +3,7 @@ import NoPage from "./pages/nopage/NoPage";
 import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
 import ForgotPassword from "./pages/login/ForgotPassword";
+import ResetNewPassword from "./pages/login/ResetNewPassword";
 import Register from "./pages/login/Register";
 import ListView from "./pages/listview/ListView";
 import Payment from "./pages/payment/Payment";
@@ -17,6 +18,7 @@ import "./styles/dark.scss"
 import React, { useState } from 'react';
 // import React, { Component }  from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 function App() {
 
   const [token, setToken] = useState();
@@ -43,6 +45,7 @@ function App() {
 
             <Route path="/register" exact element={<Register />}></Route>
             <Route path="/reset-password" exact element={<ForgotPassword />}></Route>
+            <Route path="/reset-new-password" exact element={<ResetNewPassword />}></Route>
 
             <Route path="user">
 

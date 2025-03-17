@@ -17,6 +17,7 @@ import Stack from "@mui/material/Stack";
 import MuiAlert from "@mui/material/Alert";
 import Slide from "@mui/material/Slide";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Alert = forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -52,10 +53,31 @@ export default function ForgotPassword() {
   const horizontal = "right";
   const navigate = useNavigate();
 
-  const handleSubmit = async (event) => {
+  /*const handleSubmit = async (event) => {
     setOpen(true);
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+  };*/
+
+  const [email, setEmail] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!email) {
+      setErrorMessage(" Email is required .");
+      return;
+    }
+    try {
+      const response = await axios.post("http://localhost:9191/user/forgot-password",
+        { email }, { headers: { "Content-Type": "application/json" } });
+      setErrorMessage("");
+      //   localStorage.setItem("token", response.data.token);
+      navigate("/");
+    } catch (error) {
+      setErrorMessage("Invalid Email!");
+    }
   };
 
   const handleClose = (event, reason) => {
@@ -142,6 +164,7 @@ export default function ForgotPassword() {
                             label="Email"
                             name="email"
                             autoComplete="email"
+                            onChange={(e) => setEmail(e.target.value)}
                           />
                         </Grid>
                         <Grid item xs={12} sx={{ ml: "5em", mr: "5em" }}>
