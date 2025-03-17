@@ -81,7 +81,7 @@ export default function ResetNewPassword() {
             });
             setErrorMessage("");
             // localStorage.setItem("token", response.data.token);
-            navigate("/dashboard");
+            navigate("/");
         } catch (error) {
             setErrorMessage("Invalid credentials!");
         }

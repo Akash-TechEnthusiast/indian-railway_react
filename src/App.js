@@ -10,6 +10,8 @@ import Payment from "./pages/payment/Payment";
 import New from "./pages/new/New";
 import Single from "./pages/single/Single";
 import CardView from "./pages/cardview/CardView";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import CreateForm from "./pages/createform/CreateForm";
 
@@ -66,6 +68,15 @@ function App() {
 
         </Routes>
       </BrowserRouter>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        pauseOnHover
+        draggable
+      />
 
 
     </div>

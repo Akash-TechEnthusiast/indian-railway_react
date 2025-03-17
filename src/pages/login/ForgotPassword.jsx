@@ -18,6 +18,7 @@ import MuiAlert from "@mui/material/Alert";
 import Slide from "@mui/material/Slide";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const Alert = forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -73,10 +74,22 @@ export default function ForgotPassword() {
       const response = await axios.post("http://localhost:9191/user/forgot-password",
         { email }, { headers: { "Content-Type": "application/json" } });
       setErrorMessage("");
+
+
+
+      //  toast.success("This is a success message!");  // Green toast
+      //toast.error("Something went wrong!");        // Red toast
+      //toast.warning("Warning! Check your input."); // Yellow toast
+      //toast.info("Just some information.");        // Blue toast
       //   localStorage.setItem("token", response.data.token);
+      toast.success(" Eamil sent successfully please check your mail !! ", {
+        position: "top-right",
+        autoClose: 3000, // Closes after 3 seconds
+      });
       navigate("/");
     } catch (error) {
-      setErrorMessage("Invalid Email!");
+      toast.error("Invalid Email!");
+
     }
   };
 
