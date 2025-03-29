@@ -12,13 +12,14 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { useState, forwardRef } from "react";
+import { useState, forwardRef, useEffect } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import Stack from "@mui/material/Stack";
 import MuiAlert from "@mui/material/Alert";
 import Slide from "@mui/material/Slide";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 
 
@@ -62,6 +63,17 @@ export default function Login() {
   const [errorMessage, setErrorMessage] = useState('');
 
 
+  useEffect(() => {
+    // Load saved credentials from localStorage (if "Remember Me" was checked)
+    const savedusername = localStorage.getItem("rememberedUserName") || Cookies.get("rememberedUserName");
+    //  const savedPassword = localStorage.getItem("rememberedPassword");
+    if (savedusername) {
+      setUsername(savedusername);
+      setRemember(true);
+    }
+  }, []);
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -76,6 +88,16 @@ export default function Login() {
       });
       setErrorMessage("");
       localStorage.setItem("token", response.data.token);
+      if (remember) {
+        localStorage.setItem("rememberedUserName", username);
+
+        Cookies.set("rememberedUserName", username, { expires: 7 });
+
+      } else {
+        localStorage.removeItem("rememberedUserName");
+        Cookies.remove("rememberedUserName");
+
+      }
       navigate("/dashboard");
     } catch (error) {
       setErrorMessage("Invalid credentials!");
@@ -172,10 +194,11 @@ export default function Login() {
                           <TextField
                             required
                             fullWidth
-                            id="email"
+                            id="Username"
                             label="Username"
-                            name="email"
-                            autoComplete="email"
+                            name="Username"
+                            value={username}
+                            autoComplete="Username"
                             onChange={(e) => setUsername(e.target.value)}
                           />
                         </Grid>
@@ -186,6 +209,7 @@ export default function Login() {
                             name="password"
                             label="Password"
                             type="password"
+                            value={password}
                             id="password"
                             autoComplete="new-password"
                             onChange={(e) => setPassword(e.target.value)}
