@@ -86,6 +86,10 @@ export default function ForgotPassword() {
         position: "top-right",
         autoClose: 3000, // Closes after 3 seconds
       });
+
+
+   
+
       navigate("/");
     } catch (error) {
       toast.error("Invalid Email!");

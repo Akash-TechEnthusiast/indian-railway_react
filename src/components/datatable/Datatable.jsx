@@ -1,6 +1,7 @@
 import "./datatable.scss";
 import * as React from 'react';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import { Box } from "@mui/material";
 
 import { userRows, userColumns } from "../../dataTableSource";
 import { Link } from 'react-router-dom';
@@ -83,18 +84,19 @@ const Datatable = () => {
                 </Link>
             </div>
 
-
+            {/* Set fixed width & height */}
             <DataGrid className="datagrid"
                 rows={userRows}
                 columns={userColumns.concat(actionColumn)}
                 initialState={{
                     pagination: {
-                        paginationModel: { page: 0, pageSize: 10 },
+                        paginationModel: { page: 0, pageSize: 5 },
                     },
                 }}
-                pageSizeOptions={[5, 10]}
+                pageSizeOptions={[10, 20, 30]}
                 checkboxSelection
             />
+
 
         </div>
     )

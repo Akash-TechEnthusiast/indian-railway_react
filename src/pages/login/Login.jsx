@@ -81,6 +81,8 @@ export default function Login() {
       setErrorMessage("Both fields are required.");
       return;
     }
+
+
     try {
       const response = await axios.post("http://localhost:9191/authenticate", {
         username,
@@ -100,8 +102,24 @@ export default function Login() {
       }
       navigate("/dashboard");
     } catch (error) {
-      setErrorMessage("Invalid credentials!");
+      // console.error("API is down:", error);
+      // Check if error is due to no response from server (API down)
+      if (error.response === undefined) {
+        // Server responded with a status code (e.g., 500, 403)
+        setErrorMessage("❌ API is Down !!");
+
+      } else if (error.response.status === 400) {
+        // Request made but no response received (API completely down)
+
+        setErrorMessage("❌ Invalid credentials!");
+      } else {
+        // Some other error (possibly client-side)
+        setErrorMessage(`⚠️ Error: ${error.message}`);
+      }
+
     }
+
+
   };
 
 

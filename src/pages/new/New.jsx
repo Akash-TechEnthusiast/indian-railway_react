@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import "./new.scss";
@@ -13,27 +13,27 @@ const New = () => {
     const [selectedFile, setSelectedFile] = useState(null);
 
     const handleFileChange = (e) => {
-      setSelectedFile(e.target.files[0]);
+        setSelectedFile(e.target.files[0]);
 
-      console.log('Selected file:', e.target.files[0]);
-      const formData = new FormData();
-      formData.append('file', selectedFile);
-  
-      axios.post('http://localhost:3000/api/upload', formData,{
-        headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-      })
-        .then((response) => {
-          console.log('File uploaded successfully!', response);
+        console.log('Selected file:', e.target.files[0]);
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+
+        axios.post('http://localhost:3000/api/upload', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
         })
-        .catch((error) => {
-          console.error('Error uploading file:', error);
-        });
+            .then((response) => {
+                console.log('File uploaded successfully!', response);
+            })
+            .catch((error) => {
+                console.error('Error uploading file:', error);
+            });
     };
-  
+
     const handleFileUpload = () => {
-     
+
     };
 
     return (
@@ -58,7 +58,7 @@ const New = () => {
                                 <input id="fileuploadId" onChange={handleFileChange} type="file" style={{ "border-bottom": "none" }}></input>
 
                             </div>
-                          
+
                             <div className="formInput">
                                 <lable>address</lable>
                                 <input type="text" placeholder="Akash"></input>
@@ -82,7 +82,7 @@ const New = () => {
                                 <input type="email" placeholder="Akash"></input>
                             </div>
 
-                            
+
                             <div className="formInput">
                                 <lable>phoneno</lable>
                                 <input type="number" placeholder="Akash"></input>
