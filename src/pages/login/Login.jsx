@@ -43,7 +43,7 @@ const boxstyle = {
   width: "75%",
   height: "70%",
   bgcolor: "background.paper",
-  boxShadow: 10,
+  boxShadow: 24,
 };
 
 const center = {

@@ -88,7 +88,7 @@ export default function ForgotPassword() {
       });
 
 
-   
+
 
       navigate("/");
     } catch (error) {
