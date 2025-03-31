@@ -66,9 +66,11 @@ export default function Login() {
   useEffect(() => {
     // Load saved credentials from localStorage (if "Remember Me" was checked)
     const savedusername = localStorage.getItem("rememberedUserName") || Cookies.get("rememberedUserName");
+    const savedpassword = localStorage.getItem("rememberedPassword") || Cookies.get("rememberedPassword");
     //  const savedPassword = localStorage.getItem("rememberedPassword");
-    if (savedusername) {
+    if (savedusername && savedpassword) {
       setUsername(savedusername);
+      setPassword(savedpassword);
       setRemember(true);
     }
   }, []);
@@ -92,12 +94,18 @@ export default function Login() {
       localStorage.setItem("token", response.data.token);
       if (remember) {
         localStorage.setItem("rememberedUserName", username);
+        localStorage.setItem("rememberedPassword", password);
 
         Cookies.set("rememberedUserName", username, { expires: 7 });
+        Cookies.set("rememberedPassword", password, { expires: 7 });
 
       } else {
         localStorage.removeItem("rememberedUserName");
+        localStorage.removeItem("rememberedPassword");
         Cookies.remove("rememberedUserName");
+        Cookies.remove("rememberedPassword");
+
+
 
       }
       navigate("/dashboard");
@@ -106,7 +114,7 @@ export default function Login() {
       // Check if error is due to no response from server (API down)
       if (error.response === undefined) {
         // Server responded with a status code (e.g., 500, 403)
-        setErrorMessage("❌ API is Down !!");
+        setErrorMessage("❌ Server is Down !!");
 
       } else if (error.response.status === 400) {
         // Request made but no response received (API completely down)
