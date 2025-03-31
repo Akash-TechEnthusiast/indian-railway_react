@@ -2,6 +2,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 //import bgimg from "./backimg.jpg";
 //import bg from "./src/assets/signin.svg";
+import indian from '../../assets/indian-high.png'
 
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -188,9 +189,9 @@ export default function Login() {
               >
 
                 <img
-                  src="https://cdn.pixabay.com/photo/2015/09/16/08/55/online-942406_1280.jpg"
+                  src={indian}
                   alt="Sample"
-                  style={{ width: "100%", height: "auto" }}
+                  style={{ width: "100%", height: "91%" }}
                 />
 
               </Box>
