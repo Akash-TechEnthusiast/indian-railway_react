@@ -42,7 +42,7 @@ const boxstyle = {
   width: "75%",
   height: "70%",
   bgcolor: "background.paper",
-  boxShadow: 24,
+  boxShadow: 10,
 };
 
 const center = {
@@ -114,7 +114,7 @@ export default function Login() {
       // Check if error is due to no response from server (API down)
       if (error.response === undefined) {
         // Server responded with a status code (e.g., 500, 403)
-        setErrorMessage("❌ Server is Down !!");
+        setErrorMessage("❌ Server Down !!");
 
       } else if (error.response.status === 400) {
         // Request made but no response received (API completely down)
@@ -183,7 +183,19 @@ export default function Login() {
                   height: "63vh",
                   color: "#f5f5f5",
                 }}
-              ></Box>
+
+
+              >
+
+                <img
+                  src="https://cdn.pixabay.com/photo/2015/09/16/08/55/online-942406_1280.jpg"
+                  alt="Sample"
+                  style={{ width: "100%", height: "auto" }}
+                />
+
+              </Box>
+
+
             </Grid>
             <Grid item xs={12} sm={12} lg={6}>
               <Box
@@ -309,7 +321,7 @@ export default function Login() {
             </Grid>
           </Grid>
         </Box>
-      </div>
+      </div >
     </>
   );
 }
