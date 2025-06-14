@@ -17,6 +17,7 @@ import Stack from "@mui/material/Stack";
 import MuiAlert from "@mui/material/Alert";
 import Slide from "@mui/material/Slide";
 import { useNavigate } from "react-router-dom";
+import indian from '../../assets/indian-high.png'
 
 const Alert = forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -58,6 +59,7 @@ export default function Register() {
     const data = new FormData(event.currentTarget);
   };
 
+
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -95,7 +97,7 @@ export default function Register() {
             <Grid item xs={12} sm={12} lg={6}>
               <Box
                 style={{
-                  //  backgroundImage: `url(${bg})`,
+                  //   backgroundImage: `url(${bg})`,
                   backgroundSize: "cover",
                   marginTop: "40px",
                   marginLeft: "15px",
@@ -103,7 +105,19 @@ export default function Register() {
                   height: "63vh",
                   color: "#f5f5f5",
                 }}
-              ></Box>
+
+
+              >
+
+                <img
+                  src={indian}
+                  alt="Sample"
+                  style={{ width: "100%", height: "91%" }}
+                />
+
+              </Box>
+
+
             </Grid>
             <Grid item xs={12} sm={12} lg={6}>
               <Box
@@ -118,13 +132,9 @@ export default function Register() {
                   <Container>
                     <Box height={35} />
                     <Box sx={center}>
-                      <Avatar
-                        sx={{ ml: "85px", mb: "4px", bgcolor: "#ffffff" }}
-                      >
-                        <LockOutlinedIcon />
-                      </Avatar>
+
                       <Typography component="h1" variant="h4">
-                        Create Account
+                        Registration
                       </Typography>
                     </Box>
                     <Box
@@ -164,6 +174,28 @@ export default function Register() {
                             type="password"
                             id="confirmpassword"
                             autoComplete="new-password"
+                          />
+                        </Grid>
+                        <Grid item xs={12} sx={{ ml: "3em", mr: "3em" }}>
+                          <TextField
+                            required
+                            fullWidth
+                            name="email"
+                            label="Email"
+                            type="email"
+                            id="email"
+                            autoComplete="email"
+                          />
+                        </Grid>
+                        <Grid item xs={12} sx={{ ml: "3em", mr: "3em" }}>
+                          <TextField
+                            required
+                            fullWidth
+                            name="phoneNumber"
+                            label="Phone Number"
+                            type="number"
+                            id="phonenumber"
+                            autoComplete="phonenumber"
                           />
                         </Grid>
                         <Grid item xs={12} sx={{ ml: "5em", mr: "5em" }}>

@@ -18,15 +18,27 @@ import {
     Switch,
     Slider,
     Typography,
-    Container,
     Grid,
     IconButton,
     InputAdornment,
-    Box
+    Box,
+    Tabs,
+    Tab
 } from "@mui/material";
-import { Email, Visibility, VisibilityOff, DateRange, FileUpload, Send, Delete } from "@mui/icons-material";
+import {
+    Email,
+    Visibility,
+    VisibilityOff,
+    DateRange,
+    FileUpload,
+    Send,
+    Delete
+} from "@mui/icons-material";
 
 const CreateForm = () => {
+    const [tabValue, setTabValue] = useState(0);
+    const [showPassword, setShowPassword] = useState(false);
+    const [file, setFile] = useState(null);
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -36,340 +48,161 @@ const CreateForm = () => {
         notifications: true,
         age: 18,
         dob: "",
-        file: null,
+        country: "",
+        address: ""
     });
 
-    const [showPassword, setShowPassword] = useState(false);
+    const [errors, setErrors] = useState({});
 
+    const handleTabChange = (_, newValue) => setTabValue(newValue);
 
-    // Handle input change
-    const handleChange = (event) => {
-        const { name, value, type, checked } = event.target;
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
         setFormData({
             ...formData,
-            [name]: type === "checkbox" ? checked : value,
+            [name]: type === "checkbox" ? checked : value
         });
     };
 
-
-
-    const [file, setFile] = useState(null);
-
-    const handleFileChange = (event) => {
-        const selectedFile = event.target.files[0];
-        if (selectedFile) {
-            setFile(selectedFile);
-        }
+    const handleFileChange = (e) => {
+        setFile(e.target.files[0]);
     };
 
-    const handleRemoveFile = () => {
-        setFile(null);
-    };
+    const handleRemoveFile = () => setFile(null);
 
-
-
-    // Handle slider change
-    const handleSliderChange = (event, newValue) => {
+    const handleSliderChange = (_, newValue) => {
         setFormData({ ...formData, age: newValue });
     };
 
-    // Handle form submission
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    const validateForm = () => {
+        const errors = {};
+        if (!formData.name.trim()) errors.name = "Name is required";
+        if (!formData.email.trim()) errors.email = "Email is required";
+        else if (!/\S+@\S+\.\S+/.test(formData.email)) errors.email = "Invalid email";
+        if (!formData.password || formData.password.length < 6) errors.password = "Password must be at least 6 characters";
+        if (!formData.gender) errors.gender = "Gender is required";
+        if (!formData.dob) errors.dob = "Date of birth is required";
+        if (!formData.country) errors.country = "Country is required";
+        if (!formData.agreeTerms) errors.agreeTerms = "You must accept terms";
+        if (!formData.address.trim()) errors.address = "Address is required";
+        return errors;
+    };
 
-        const formDataToSend = {
-            name: formData.name,
-            email: formData.email,
-            password: formData.password,
-            gender: formData.gender,
-            age: formData.age,
-            dob: formData.dob,
-            agreeTerms: formData.agreeTerms,
-            notifications: formData.notifications,
-            country: formData.country,
-        };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const validationErrors = validateForm();
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            const fieldTabMap = {
+                name: 0, email: 0, password: 0, gender: 0,
+                age: 1, dob: 1, file: 1,
+                country: 2, address: 2, agreeTerms: 2
+            };
+            setTabValue(fieldTabMap[Object.keys(validationErrors)[0]]);
+            return toast.error("Please fix the errors in the form.");
+        }
 
         try {
-            const response = await axiosInstance.post("/api/student/create", formDataToSend, {
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-
-            console.log("Data submitted successfully:", response.data);
-            // alert("Form submitted successfully!");
-            toast.success(" Data submitted successfully: ", {
-                position: "top-right",
-                autoClose: 3000, // Closes after 3 seconds
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                theme: "light",
-            });
-
-
+            const response = await axiosInstance.post("/api/student/create", formData);
+            toast.success("Form submitted successfully!");
         } catch (error) {
-            console.error("Error submitting form:", error);
-
-            // alert("Failed to submit form.");
-
-            toast.error(" Error while submitting form ", {
-                position: "top-right",
-                autoClose: 3000, // Closes after 3 seconds
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                theme: "dark",
-            });
-
+            toast.error("Error submitting form.");
         }
     };
+
     return (
-
-
         <div className="home">
             <Sidebar />
             <div className="homecontainer">
                 <Navbar />
-                <Box
-                    sx={{
+                <Box sx={{ border: "3px solid #1976d2", borderRadius: "10px", p: 3, boxShadow: 2 }}>
+                    <Typography variant="h4" align="center" mb={3}>Student Create Form</Typography>
+                    <Tabs value={tabValue} onChange={handleTabChange} centered>
+                        <Tab label="Basic Info" />
+                        <Tab label="Details" />
+                        <Tab label="Address" />
+                    </Tabs>
 
-                        border: "3px solid #1976d2", // Border color
-                        borderRadius: "10px", // Rounded corners
-                        padding: "20px",
-
-                        boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.1)", // Light shadow
-
-                    }}
-                >
-                    <Typography variant="h4" sx={{ textAlign: "center", mb: 3 }}>
-                        Student Create Form
-                    </Typography>
                     <form onSubmit={handleSubmit}>
-                        <Grid container spacing={2}>
-                            {/* Name Field */}
-                            <Grid item xs={12} md={2} sm={6}>
-                                <TextField label="Name" size="small" name="name" value={formData.name} onChange={handleChange} required />
+                        {tabValue === 0 && (
+                            <Grid container spacing={2} mt={1}>
+                                <Grid item xs={12} md={4}>
+                                    <TextField label="Name" name="name" fullWidth size="small" value={formData.name} onChange={handleChange} error={!!errors.name} helperText={errors.name} />
+                                </Grid>
+                                <Grid item xs={12} md={4}>
+                                    <TextField label="Email" name="email" type="email" fullWidth size="small" value={formData.email} onChange={handleChange} error={!!errors.email} helperText={errors.email} InputProps={{ startAdornment: (<InputAdornment position="start"><Email /></InputAdornment>) }} />
+                                </Grid>
+                                <Grid item xs={12} md={4}>
+                                    <TextField label="Password" name="password" type={showPassword ? "text" : "password"} fullWidth size="small" value={formData.password} onChange={handleChange} error={!!errors.password} helperText={errors.password} InputProps={{ endAdornment: (<InputAdornment position="end"><IconButton onClick={() => setShowPassword(!showPassword)}>{showPassword ? <VisibilityOff /> : <Visibility />}</IconButton></InputAdornment>) }} />
+                                </Grid>
+                                <Grid item xs={12} md={4}>
+                                    <FormControl fullWidth error={!!errors.gender}>
+                                        <Typography>Gender</Typography>
+                                        <RadioGroup row name="gender" value={formData.gender} onChange={handleChange}>
+                                            <FormControlLabel value="male" control={<Radio size="small" />} label="Male" />
+                                            <FormControlLabel value="female" control={<Radio size="small" />} label="Female" />
+                                            <FormControlLabel value="other" control={<Radio size="small" />} label="Other" />
+                                        </RadioGroup>
+                                        {errors.gender && <Typography color="error" variant="caption">{errors.gender}</Typography>}
+                                    </FormControl>
+                                </Grid>
                             </Grid>
+                        )}
 
-                            <Grid item xs={12} md={2}>
-                                <TextField label="Name" size="small" name="name" value={formData.name} onChange={handleChange} required />
+                        {tabValue === 1 && (
+                            <Grid container spacing={2} mt={1}>
+                                <Grid item xs={12} md={4}>
+                                    <Typography>Age: {formData.age}</Typography>
+                                    <Slider min={10} max={100} value={formData.age} onChange={handleSliderChange} />
+                                </Grid>
+                                <Grid item xs={12} md={4}>
+                                    <TextField label="Date of Birth" name="dob" type="date" fullWidth size="small" value={formData.dob} onChange={handleChange} error={!!errors.dob} helperText={errors.dob} InputLabelProps={{ shrink: true }} InputProps={{ startAdornment: (<InputAdornment position="start"><DateRange /></InputAdornment>) }} />
+                                </Grid>
+                                <Grid item xs={12} md={4}>
+                                    <Button variant="contained" size="small" component="label" startIcon={<FileUpload />}>
+                                        Upload File
+                                        <input type="file" hidden onChange={handleFileChange} />
+                                    </Button>
+                                    {file && (
+                                        <Box mt={1} display="flex" alignItems="center">
+                                            <Typography variant="body2" mr={1}>{file.name}</Typography>
+                                            <IconButton size="small" onClick={handleRemoveFile}><Delete color="error" /></IconButton>
+                                        </Box>
+                                    )}
+                                </Grid>
                             </Grid>
+                        )}
 
-                            <Grid item xs={12} md={2}>
-                                <TextField label="Name" size="small" name="name" value={formData.name} onChange={handleChange} required />
+                        {tabValue === 2 && (
+                            <Grid container spacing={2} mt={1}>
+                                <Grid item xs={12} md={6}>
+                                    <FormControl fullWidth error={!!errors.country}>
+                                        <InputLabel>Country</InputLabel>
+                                        <Select name="country" value={formData.country} onChange={handleChange} label="Country">
+                                            <MenuItem value="India">India</MenuItem>
+                                            <MenuItem value="USA">USA</MenuItem>
+                                            <MenuItem value="UK">UK</MenuItem>
+                                        </Select>
+                                        {errors.country && <Typography color="error" variant="caption">{errors.country}</Typography>}
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12} md={6}>
+                                    <TextField label="Address" name="address" fullWidth size="small" multiline rows={4} value={formData.address} onChange={handleChange} error={!!errors.address} helperText={errors.address} />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <FormControlLabel control={<Switch name="notifications" checked={formData.notifications} onChange={handleChange} />} label="Receive Notifications" />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <FormControlLabel control={<Checkbox name="agreeTerms" checked={formData.agreeTerms} onChange={handleChange} />} label="I agree to the terms and conditions" />
+                                    {errors.agreeTerms && <Typography color="error" variant="caption">{errors.agreeTerms}</Typography>}
+                                </Grid>
                             </Grid>
+                        )}
 
-                            <Grid item xs={12} md={2}>
-                                <TextField label="Name" size="small" name="name" value={formData.name} onChange={handleChange} required />
-                            </Grid>
-
-                            <Grid item xs={12} md={2}>
-                                <TextField label="Name" size="small" name="name" value={formData.name} onChange={handleChange} required />
-                            </Grid>
-
-                            <Grid item xs={12} md={2}>
-                                <TextField label="Name" size="small" name="name" value={formData.name} onChange={handleChange} required />
-                            </Grid>
-
-                            <Grid item xs={12} md={2}>
-                                <TextField label="Name" size="small" name="name" value={formData.name} onChange={handleChange} required />
-                            </Grid>
-
-                            {/* Email Field with Icon */}
-                            <Grid item xs={12} md={2}>
-                                <TextField
-
-                                    label="Email"
-                                    name="email"
-                                    type="email"
-                                    size="small"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    required
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <Email />
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
-                            </Grid>
-
-                            {/* Password Field with Toggle */}
-                            <Grid item xs={12} md={2}>
-                                <TextField
-
-                                    label="Password"
-                                    name="password"
-                                    size="small"
-                                    type={showPassword ? "text" : "password"}
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                    required
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <IconButton onClick={() => setShowPassword(!showPassword)}>
-                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                                                </IconButton>
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
-                            </Grid>
-
-                            {/* Gender Radio Buttons */}
-
-
-                            {/* Age Slider */}
-                            <Grid item xs={12} md={2} fullWidth={false}>
-                                <Typography>Age: {formData.age}</Typography>
-                                <Slider
-                                    value={formData.age}
-                                    onChange={handleSliderChange}
-                                    min={10}
-                                    max={100}
-                                    step={1}
-                                    marks
-                                />
-                            </Grid>
-
-                            {/* Date of Birth Field */}
-                            <Grid item xs={12} md={2}>
-                                <TextField
-
-                                    name="dob"
-                                    type="date"
-                                    size="small"
-                                    value={formData.dob}
-                                    onChange={handleChange}
-                                    InputLabelProps={{ shrink: true }}
-                                    label="Date of Birth"
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <DateRange />
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
-                            </Grid>
-
-                            {/* File Upload */}
-
-
-
-                            <Grid item xs={12} md={2}>
-                                <Button
-                                    variant="contained"
-                                    size="small"
-                                    component="label"
-                                    startIcon={<FileUpload />}
-                                >
-                                    Upload File
-                                    <input type="file" hidden onChange={handleFileChange} />
-                                </Button>
-
-                                {/* Show Uploaded File Name and Remove Button */}
-                                {file && (
-                                    <Grid container alignItems="center" sx={{ mt: 1 }}>
-                                        <Typography variant="body2" sx={{ color: "gray", mr: 1 }}>
-                                            {file.name}
-                                        </Typography>
-                                        <IconButton size="small" onClick={handleRemoveFile}>
-                                            <Delete color="error" />
-                                        </IconButton>
-                                    </Grid>
-                                )}
-                            </Grid>
-
-
-                            {/* Dropdown Select */}
-                            <Grid item xs={12} md={2}>
-
-
-                                <FormControl fullWidth>
-
-
-                                    <InputLabel id="demo-simple-select-label">Country</InputLabel>
-                                    <Select name="country" value={formData.country}
-                                        labelId="demo-simple-select-label"
-                                        id="demo-simple-select"
-                                        label="Country"
-                                        onChange={handleChange}
-                                    >
-                                        <MenuItem value="India">India</MenuItem>
-                                        <MenuItem value="USA">USA</MenuItem>
-                                        <MenuItem value="UK">UK</MenuItem>
-                                    </Select>
-                                </FormControl>
-
-
-
-                            </Grid>
-
-                            <Grid item xs={12} md={2}>
-                                <FormControl component="fieldset">
-                                    <Typography>Gender</Typography>
-                                    <RadioGroup row name="gender" value={formData.gender} onChange={handleChange}>
-                                        <FormControlLabel value="male" control={<Radio size="small" />} label="Male" />
-                                        <FormControlLabel value="female" control={<Radio size="small" />} label="Female" />
-                                        <FormControlLabel value="other" control={<Radio size="small" />} label="Other" />
-                                    </RadioGroup>
-                                </FormControl>
-                            </Grid>
-
-                            {/* Checkbox */}
-
-                            {/* Switch */}
-
-
-                            <Grid item xs={12} md={4}>
-                                <TextField fullWidth
-                                    id="outlined-multiline-static"
-                                    label="Address"
-                                    multiline
-                                    rows={4}
-                                    defaultValue="Enter Address"
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} md={4} sx={{ display: "flex", justifyContent: "center" }}>
-                                <FormControlLabel
-                                    control={<Switch size="small" checked={formData.notifications} onChange={handleChange} name="notifications" />}
-                                    label="Receive Notifications"
-                                />
-                            </Grid>
-
-
-                            <Grid item xs={12} md={12} sx={{ display: "flex", justifyContent: "center" }}>
-                                <FormControlLabel
-                                    control={<Checkbox size="small" checked={formData.agreeTerms} onChange={handleChange} name="agreeTerms" />}
-                                    label="I agree to the terms and conditions"
-                                />
-                            </Grid>
-
-
-
-
-
-
-
-                            {/* Submit Button */}
-
-
-                            <Grid fullWidth item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
-                                <Button type="submit" size="small" variant="contained" color="primary" startIcon={<Send />}>
-                                    Submit
-                                </Button>
-                            </Grid>
+                        <Grid item xs={12} mt={3} display="flex" justifyContent="center">
+                            <Button type="submit" variant="contained" color="primary" startIcon={<Send />}>Submit</Button>
                         </Grid>
                     </form>
-
                 </Box>
             </div>
         </div>
