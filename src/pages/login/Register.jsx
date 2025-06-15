@@ -53,13 +53,15 @@ export default function Register() {
   const vertical = "top";
   const horizontal = "right";
   const navigate = useNavigate();
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // or "error"
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const [formData, setFormData] = useState({
     userName: "",
     password: "",
     confirmPassword: "",
     email: "",
-    phoneNumber: "",
+    mobileNumber: "",
   });
 
   const [formErrors, setFormErrors] = useState({
@@ -67,8 +69,26 @@ export default function Register() {
     password: "",
     confirmPassword: "",
     email: "",
-    phoneNumber: "",
+    mobileNumber: "",
   });
+
+  const resetForm = () => {
+    setFormData({
+      userName: "",
+      password: "",
+      confirmPassword: "",
+      email: "",
+      mobileNumber: "",
+    });
+
+    setFormErrors({
+      userName: "",
+      password: "",
+      confirmPassword: "",
+      email: "",
+      mobileNumber: "",
+    });
+  };
 
   const validate = () => {
     const errors = {};
@@ -85,10 +105,10 @@ export default function Register() {
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       errors.email = "Email is invalid";
     }
-    if (!formData.phoneNumber) {
-      errors.phoneNumber = "Phone number is required";
-    } else if (!/^\d{10}$/.test(formData.phoneNumber)) {
-      errors.phoneNumber = "Phone number must be 10 digits";
+    if (!formData.mobileNumber) {
+      errors.mobileNumber = "Phone number is required";
+    } else if (!/^\d{10}$/.test(formData.mobileNumber)) {
+      errors.mobileNumber = "Phone number must be 10 digits";
     }
 
     setFormErrors(errors);
@@ -99,18 +119,25 @@ export default function Register() {
     event.preventDefault();
     if (validate()) {
       try {
-        const response = await axios.post("http://localhost:9191/authenticate/api/users/register", formData);
+        const response = await axios.post("http://localhost:9191/user/adduser", formData);
         console.log("Success:", response.data);
-        //  navigate("/success"); // or show snackbar
+        setSnackbarSeverity("success");
+        setSnackbarMessage("Registration successful!");
+        setOpen(true);
+        resetForm();
+        // navigate("/success"); // optionally navigate
       } catch (error) {
         console.error("Registration error:", error);
+        setSnackbarSeverity("error");
+        setSnackbarMessage("Registration failed! Please try again.");
         setOpen(true);
       }
     } else {
+      setSnackbarSeverity("error");
+      setSnackbarMessage("Please correct the highlighted errors.");
       setOpen(true);
     }
   };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -131,6 +158,8 @@ export default function Register() {
 
   return (
     <>
+
+
       <Snackbar
         open={open}
         autoHideDuration={3000}
@@ -138,10 +167,12 @@ export default function Register() {
         TransitionComponent={TransitionLeft}
         anchorOrigin={{ vertical, horizontal }}
       >
-        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          Failed! Enter correct username and password.
+        <Alert onClose={handleClose} severity={snackbarSeverity} sx={{ width: "100%" }}>
+          {snackbarMessage}
         </Alert>
       </Snackbar>
+
+
       <div
         style={{
           //  backgroundImage: `url(${bgimg})`,
@@ -263,14 +294,14 @@ export default function Register() {
                           <TextField
                             required
                             fullWidth
-                            name="phoneNumber"
-                            label="Phone Number"
+                            name="mobileNumber"
+                            label="Mobile Number"
                             type="text"
-                            id="phonenumber"
-                            value={formData.phoneNumber}
+                            id="mobilenumber"
+                            value={formData.mobileNumber}
                             onChange={handleChange}
-                            error={!!formErrors.phoneNumber}
-                            helperText={formErrors.phoneNumber}
+                            error={!!formErrors.mobileNumber}
+                            helperText={formErrors.mobileNumber}
                           />
                         </Grid>
                         <Grid item xs={12} sx={{ ml: "5em", mr: "5em" }}>
