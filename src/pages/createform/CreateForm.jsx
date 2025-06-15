@@ -4,6 +4,7 @@ import Navbar from "../../components/navbar/Navbar";
 import "./createform.scss";
 import axiosInstance from "../../components/service_urls/AxiosInstance";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import {
     TextField,
     Button,
@@ -39,6 +40,7 @@ const CreateForm = () => {
     const [tabValue, setTabValue] = useState(0);
     const [showPassword, setShowPassword] = useState(false);
     const [file, setFile] = useState(null);
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -105,6 +107,7 @@ const CreateForm = () => {
         try {
             const response = await axiosInstance.post("/api/student/create", formData);
             toast.success("Form submitted successfully!");
+            navigate("/view");
         } catch (error) {
             toast.error("Error submitting form.");
         }

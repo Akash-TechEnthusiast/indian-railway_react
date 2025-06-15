@@ -14,6 +14,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import CreateForm from "./pages/createform/CreateForm";
+import ViewForm from "./pages/createform/ViewForm";
 
 import "./styles/dark.scss"
 
@@ -44,6 +45,7 @@ function App() {
             <Route index element={<Login />} />
 
             <Route path="/dashboard" element={<CreateForm />} />
+            <Route path="/view" element={<ViewForm />} />
 
             <Route path="/register" exact element={<Register />}></Route>
             <Route path="/reset-password" exact element={<ForgotPassword />}></Route>
