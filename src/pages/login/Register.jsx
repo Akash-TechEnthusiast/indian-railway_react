@@ -17,7 +17,8 @@ import Stack from "@mui/material/Stack";
 import MuiAlert from "@mui/material/Alert";
 import Slide from "@mui/material/Slide";
 import { useNavigate } from "react-router-dom";
-import indian from '../../assets/indian-high.png'
+import indian from '../../assets/indian-high.png';
+import axios from "axios";
 
 const Alert = forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -53,10 +54,67 @@ export default function Register() {
   const horizontal = "right";
   const navigate = useNavigate();
 
+  const [formData, setFormData] = useState({
+    userName: "",
+    password: "",
+    confirmPassword: "",
+    email: "",
+    phoneNumber: "",
+  });
+
+  const [formErrors, setFormErrors] = useState({
+    userName: "",
+    password: "",
+    confirmPassword: "",
+    email: "",
+    phoneNumber: "",
+  });
+
+  const validate = () => {
+    const errors = {};
+
+    if (!formData.userName.trim()) errors.userName = "Username is required";
+    if (!formData.password) errors.password = "Password is required";
+    if (!formData.confirmPassword) {
+      errors.confirmPassword = "Please confirm your password";
+    } else if (formData.confirmPassword !== formData.password) {
+      errors.confirmPassword = "Passwords do not match";
+    }
+    if (!formData.email) {
+      errors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      errors.email = "Email is invalid";
+    }
+    if (!formData.phoneNumber) {
+      errors.phoneNumber = "Phone number is required";
+    } else if (!/^\d{10}$/.test(formData.phoneNumber)) {
+      errors.phoneNumber = "Phone number must be 10 digits";
+    }
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSubmit = async (event) => {
-    setOpen(true);
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    if (validate()) {
+      try {
+        const response = await axios.post("http://localhost:9191/authenticate/api/users/register", formData);
+        console.log("Success:", response.data);
+        //  navigate("/success"); // or show snackbar
+      } catch (error) {
+        console.error("Registration error:", error);
+        setOpen(true);
+      }
+    } else {
+      setOpen(true);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
 
@@ -148,10 +206,15 @@ export default function Register() {
                           <TextField
                             required
                             fullWidth
-                            id="email"
+                            id="userName"
                             label="Username"
-                            name="email"
-                            autoComplete="email"
+                            name="userName"
+                            value={formData.userName}
+                            onChange={handleChange}
+                            error={!!formErrors.userName}
+                            helperText={formErrors.userName}
+
+
                           />
                         </Grid>
                         <Grid item xs={12} sx={{ ml: "3em", mr: "3em" }}>
@@ -162,18 +225,24 @@ export default function Register() {
                             label="Password"
                             type="password"
                             id="password"
-                            autoComplete="new-password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            error={!!formErrors.password}
+                            helperText={formErrors.password}
                           />
                         </Grid>
                         <Grid item xs={12} sx={{ ml: "3em", mr: "3em" }}>
                           <TextField
                             required
                             fullWidth
-                            name="confirmpassword"
+                            name="confirmPassword"
                             label="Confirm Password"
                             type="password"
-                            id="confirmpassword"
-                            autoComplete="new-password"
+                            id="confirmPassword"
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
+                            error={!!formErrors.confirmPassword}
+                            helperText={formErrors.confirmPassword}
                           />
                         </Grid>
                         <Grid item xs={12} sx={{ ml: "3em", mr: "3em" }}>
@@ -184,7 +253,10 @@ export default function Register() {
                             label="Email"
                             type="email"
                             id="email"
-                            autoComplete="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            error={!!formErrors.email}
+                            helperText={formErrors.email}
                           />
                         </Grid>
                         <Grid item xs={12} sx={{ ml: "3em", mr: "3em" }}>
@@ -193,9 +265,12 @@ export default function Register() {
                             fullWidth
                             name="phoneNumber"
                             label="Phone Number"
-                            type="number"
+                            type="text"
                             id="phonenumber"
-                            autoComplete="phonenumber"
+                            value={formData.phoneNumber}
+                            onChange={handleChange}
+                            error={!!formErrors.phoneNumber}
+                            helperText={formErrors.phoneNumber}
                           />
                         </Grid>
                         <Grid item xs={12} sx={{ ml: "5em", mr: "5em" }}>
