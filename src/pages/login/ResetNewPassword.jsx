@@ -18,6 +18,7 @@ import MuiAlert from "@mui/material/Alert";
 import Slide from "@mui/material/Slide";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
+import indian from '../../assets/indian-high.png';
 
 const Alert = forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -124,7 +125,7 @@ export default function ResetNewPassword() {
                         <Grid item xs={12} sm={12} lg={6}>
                             <Box
                                 style={{
-                                    //  backgroundImage: `url(${bg})`,
+                                    //   backgroundImage: `url(${bg})`,
                                     backgroundSize: "cover",
                                     marginTop: "40px",
                                     marginLeft: "15px",
@@ -132,7 +133,19 @@ export default function ResetNewPassword() {
                                     height: "63vh",
                                     color: "#f5f5f5",
                                 }}
-                            ></Box>
+
+
+                            >
+
+                                <img
+                                    src={indian}
+                                    alt="Sample"
+                                    style={{ width: "100%", height: "91%" }}
+                                />
+
+                            </Box>
+
+
                         </Grid>
                         <Grid item xs={12} sm={12} lg={6}>
                             <Box
