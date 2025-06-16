@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import axiosInstance from "../../components/service_urls/AxiosInstance";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import "./viewform.scss";
 
 import {
     Box,
@@ -22,13 +23,30 @@ const ViewForm = () => {
     const [students, setStudents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const location = useLocation();
     const navigate = useNavigate();
+
+    const [highlightedId, setHighlightedId] = useState(location.state?.highlightId || null);
 
     useEffect(() => {
         const fetchStudents = async () => {
             try {
                 const response = await axiosInstance.get("/api/student/fetch_all_students");
-                setStudents(response.data);
+                let fetchedStudents = response.data;
+
+                // Move the highlighted student to the top
+                const highlightId = location.state?.highlightId;
+                if (highlightId) {
+                    const highlightedStudent = fetchedStudents.find(s => s.id === highlightId);
+                    if (highlightedStudent) {
+                        fetchedStudents = [
+                            highlightedStudent,
+                            ...fetchedStudents.filter(s => s.id !== highlightId)
+                        ];
+                    }
+                }
+
+                setStudents(fetchedStudents);
             } catch (err) {
                 setError("Failed to fetch student data.");
             } finally {
@@ -37,7 +55,15 @@ const ViewForm = () => {
         };
 
         fetchStudents();
-    }, []);
+    }, [location.state]);
+
+    // Remove highlight after 5 seconds
+    useEffect(() => {
+        if (highlightedId) {
+            const timer = setTimeout(() => setHighlightedId(null), 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [highlightedId]);
 
     if (loading) {
         return (
@@ -56,16 +82,16 @@ const ViewForm = () => {
             <Sidebar />
             <div className="homecontainer">
                 <Navbar />
-                <Box p={3} >
+                <Box p={3}>
                     <Typography variant="h4" align="center" gutterBottom>
                         Student List
                     </Typography>
 
                     <TableContainer component={Paper} sx={{
-                        maxHeight: 400,   // <- This is required for sticky header to work
+                        maxHeight: 400,
                         border: "1px solid #ccc",
                         borderRadius: 1,
-                    }} >
+                    }}>
                         <Table stickyHeader>
                             <TableHead>
                                 <TableRow>
@@ -78,11 +104,22 @@ const ViewForm = () => {
                                     <TableCell>Address</TableCell>
                                     <TableCell>Agreed Terms</TableCell>
                                     <TableCell>View</TableCell>
+                                    <TableCell>Edit</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {students.map((student, index) => (
-                                    <TableRow key={index}>
+                                    <TableRow
+                                        key={index}
+                                        sx={
+                                            student.id === highlightedId
+                                                ? {
+                                                    backgroundColor: "#d1ffd6",
+                                                    transition: "background-color 1s ease",
+                                                }
+                                                : {}
+                                        }
+                                    >
                                         <TableCell>{student.name}</TableCell>
                                         <TableCell>{student.email}</TableCell>
                                         <TableCell>{student.gender}</TableCell>
@@ -93,6 +130,9 @@ const ViewForm = () => {
                                         <TableCell>{student.agreeTerms ? "Yes" : "No"}</TableCell>
                                         <TableCell>
                                             <Button onClick={() => navigate(`/view/${student.id}`)}>View</Button>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Button onClick={() => navigate(`/edit/${student.id}`)}>Edit</Button>
                                         </TableCell>
                                     </TableRow>
                                 ))}

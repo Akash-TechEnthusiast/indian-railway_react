@@ -1,60 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import "./createform.scss";
 import axiosInstance from "../../components/service_urls/AxiosInstance";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
-    TextField,
-    Button,
-    Select,
-    MenuItem,
-    FormControl,
-    InputLabel,
-    Radio,
-    RadioGroup,
-    FormControlLabel,
-    Checkbox,
-    Switch,
-    Slider,
-    Typography,
-    Grid,
-    IconButton,
-    InputAdornment,
-    Box,
-    Tabs,
-    Tab
+    TextField, Button, Select, MenuItem, FormControl, InputLabel,
+    Radio, RadioGroup, FormControlLabel, Checkbox, Switch, Slider,
+    Typography, Grid, IconButton, InputAdornment, Box, Tabs, Tab
 } from "@mui/material";
 import {
-    Email,
-    Visibility,
-    VisibilityOff,
-    DateRange,
-    FileUpload,
-    Send,
-    Delete
+    Email, Visibility, VisibilityOff, DateRange,
+    FileUpload, Send, Delete
 } from "@mui/icons-material";
 
-const CreateForm = () => {
+const EditForm = () => {
     const [tabValue, setTabValue] = useState(0);
     const [showPassword, setShowPassword] = useState(false);
     const [file, setFile] = useState(null);
-    const navigate = useNavigate();
-    const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        password: "",
-        gender: "",
-        agreeTerms: false,
-        notifications: true,
-        age: 18,
-        dob: "",
-        country: "",
-        address: ""
-    });
-
+    const [formData, setFormData] = useState(null);
     const [errors, setErrors] = useState({});
+    const navigate = useNavigate();
+    const { id } = useParams();
+
+    useEffect(() => {
+        const fetchStudent = async () => {
+            try {
+                const response = await axiosInstance.get(`/api/student/getStudenById/${id}`);
+                setFormData(response.data);
+            } catch (err) {
+                toast.error("Failed to fetch student data");
+            }
+        };
+        fetchStudent();
+    }, [id]);
 
     const handleTabChange = (_, newValue) => setTabValue(newValue);
 
@@ -78,15 +58,15 @@ const CreateForm = () => {
 
     const validateForm = () => {
         const errors = {};
-        if (!formData.name.trim()) errors.name = "Name is required";
-        if (!formData.email.trim()) errors.email = "Email is required";
+        if (!formData.name) errors.name = "Name is required";
+        if (!formData.email) errors.email = "Email is required";
         else if (!/\S+@\S+\.\S+/.test(formData.email)) errors.email = "Invalid email";
         if (!formData.password || formData.password.length < 6) errors.password = "Password must be at least 6 characters";
         if (!formData.gender) errors.gender = "Gender is required";
         if (!formData.dob) errors.dob = "Date of birth is required";
         if (!formData.country) errors.country = "Country is required";
         if (!formData.agreeTerms) errors.agreeTerms = "You must accept terms";
-        if (!formData.address.trim()) errors.address = "Address is required";
+        if (!formData.address) errors.address = "Address is required";
         return errors;
     };
 
@@ -105,13 +85,18 @@ const CreateForm = () => {
         }
 
         try {
-            const response = await axiosInstance.post("/api/student/create", formData);
-            toast.success("Form submitted successfully!");
-            navigate("/view");
+            const response = await axiosInstance.put(`/api/student/updateStudent/${id}`, formData);
+            toast.success("Student updated successfully!");
+            //  navigate("/view");
+            navigate("/view", { state: { highlightId: response.data.id } });
         } catch (error) {
-            toast.error("Error submitting form.");
+            toast.error("Error updating student.");
         }
     };
+
+    if (!formData) {
+        return <Typography align="center">Loading...</Typography>;
+    }
 
     return (
         <div className="home">
@@ -119,7 +104,7 @@ const CreateForm = () => {
             <div className="homecontainer">
                 <Navbar />
                 <Box sx={{ border: "3px solid #1976d2", borderRadius: "10px", p: 3, boxShadow: 2 }}>
-                    <Typography variant="h4" align="center" mb={3}>Student Create Form</Typography>
+                    <Typography variant="h4" align="center" mb={3}>Edit Student</Typography>
                     <Tabs value={tabValue} onChange={handleTabChange} centered>
                         <Tab label="Basic Info" />
                         <Tab label="Details" />
@@ -133,10 +118,14 @@ const CreateForm = () => {
                                     <TextField label="Name" name="name" fullWidth size="small" value={formData.name} onChange={handleChange} error={!!errors.name} helperText={errors.name} />
                                 </Grid>
                                 <Grid item xs={12} md={4}>
-                                    <TextField label="Email" name="email" type="email" fullWidth size="small" value={formData.email} onChange={handleChange} error={!!errors.email} helperText={errors.email} InputProps={{ startAdornment: (<InputAdornment position="start"><Email /></InputAdornment>) }} />
+                                    <TextField label="Email" name="email" type="email" fullWidth size="small" value={formData.email} onChange={handleChange} error={!!errors.email} helperText={errors.email}
+                                        InputProps={{ startAdornment: (<InputAdornment position="start"><Email /></InputAdornment>) }} />
                                 </Grid>
                                 <Grid item xs={12} md={4}>
-                                    <TextField label="Password" name="password" type={showPassword ? "text" : "password"} fullWidth size="small" value={formData.password} onChange={handleChange} error={!!errors.password} helperText={errors.password} InputProps={{ endAdornment: (<InputAdornment position="end"><IconButton onClick={() => setShowPassword(!showPassword)}>{showPassword ? <VisibilityOff /> : <Visibility />}</IconButton></InputAdornment>) }} />
+                                    <TextField label="Password" name="password" type={showPassword ? "text" : "password"} fullWidth size="small" value={formData.password} onChange={handleChange} error={!!errors.password} helperText={errors.password}
+                                        InputProps={{
+                                            endAdornment: (<InputAdornment position="end"><IconButton onClick={() => setShowPassword(!showPassword)}>{showPassword ? <VisibilityOff /> : <Visibility />}</IconButton></InputAdornment>)
+                                        }} />
                                 </Grid>
                                 <Grid item xs={12} md={4}>
                                     <FormControl fullWidth error={!!errors.gender}>
@@ -159,7 +148,9 @@ const CreateForm = () => {
                                     <Slider min={10} max={100} value={formData.age} onChange={handleSliderChange} />
                                 </Grid>
                                 <Grid item xs={12} md={4}>
-                                    <TextField label="Date of Birth" name="dob" type="date" fullWidth size="small" value={formData.dob} onChange={handleChange} error={!!errors.dob} helperText={errors.dob} InputLabelProps={{ shrink: true }} InputProps={{ startAdornment: (<InputAdornment position="start"><DateRange /></InputAdornment>) }} />
+                                    <TextField label="Date of Birth" name="dob" type="date" fullWidth size="small" value={formData.dob} onChange={handleChange} error={!!errors.dob} helperText={errors.dob}
+                                        InputLabelProps={{ shrink: true }}
+                                        InputProps={{ startAdornment: (<InputAdornment position="start"><DateRange /></InputAdornment>) }} />
                                 </Grid>
                                 <Grid item xs={12} md={4}>
                                     <Button variant="contained" size="small" component="label" startIcon={<FileUpload />}>
@@ -203,7 +194,7 @@ const CreateForm = () => {
                         )}
 
                         <Grid item xs={12} mt={3} display="flex" justifyContent="center">
-                            <Button type="submit" variant="contained" color="primary" startIcon={<Send />}>Submit</Button>
+                            <Button type="submit" variant="contained" color="primary" startIcon={<Send />}>Update</Button>
                         </Grid>
                     </form>
                 </Box>
@@ -212,4 +203,4 @@ const CreateForm = () => {
     );
 };
 
-export default CreateForm;
+export default EditForm;

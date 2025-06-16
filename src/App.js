@@ -13,8 +13,11 @@ import CardView from "./pages/cardview/CardView";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import CreateForm from "./pages/createform/CreateForm";
-import ViewForm from "./pages/createform/ViewForm";
+import CreateForm from "./pages/student/CreateForm";
+import ViewForm from "./pages/student/ViewForm";
+import EditForm from "./pages/student/EditForm";
+
+
 
 import "./styles/dark.scss"
 
@@ -46,6 +49,7 @@ function App() {
 
             <Route path="/dashboard" element={<CreateForm />} />
             <Route path="/view" element={<ViewForm />} />
+            <Route path="/edit/:id" element={<EditForm />} />
 
             <Route path="/register" exact element={<Register />}></Route>
             <Route path="/reset-password" exact element={<ForgotPassword />}></Route>
