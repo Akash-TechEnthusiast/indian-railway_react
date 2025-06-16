@@ -5,6 +5,8 @@ import axiosInstance from "../../components/service_urls/AxiosInstance";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./viewform.scss";
 import { Chip } from "@mui/material";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import EditIcon from '@mui/icons-material/Edit';
 
 import {
     Box,
@@ -172,10 +174,25 @@ const ViewForm = () => {
                                         <TableCell>{student.address}</TableCell>
                                         <TableCell>{student.agreeTerms ? "Yes" : "No"}</TableCell>
                                         <TableCell>
-                                            <Button onClick={() => navigate(`/view/${student.id}`)}>View</Button>
+                                            <Button
+                                                // variant="outlined"
+                                                size="small"
+                                                startIcon={<VisibilityIcon />}
+                                                onClick={() => navigate(`/view/${student.id}`)}
+                                            >
+
+                                            </Button>
                                         </TableCell>
                                         <TableCell>
-                                            <Button onClick={() => navigate(`/edit/${student.id}`)}>Edit</Button>
+                                            <Button
+                                                //  variant="outlined"
+                                                color="primary"
+                                                size="small"
+                                                startIcon={<EditIcon />}
+                                                onClick={() => navigate(`/edit/${student.id}`)}
+                                            >
+
+                                            </Button>
                                         </TableCell>
                                     </TableRow>
                                 ))}
