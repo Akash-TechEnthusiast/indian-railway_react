@@ -88,7 +88,8 @@ const EditForm = () => {
             const response = await axiosInstance.put(`/api/student/updateStudent/${id}`, formData);
             toast.success("Student updated successfully!");
             //  navigate("/view");
-            navigate("/view", { state: { highlightId: response.data.id } });
+            //navigate("/view", { state: { highlightId: response.data.id } });
+            navigate("/view", { state: { highlightId: response.data.id, type: "edit" } });
         } catch (error) {
             toast.error("Error updating student.");
         }

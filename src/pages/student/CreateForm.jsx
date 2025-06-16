@@ -108,7 +108,8 @@ const CreateForm = () => {
             console.log(formData);
             const response = await axiosInstance.post("/api/student/create", formData);
             toast.success("Form submitted successfully!");
-            navigate("/view");
+            // navigate("/view");
+            navigate("/view", { state: { highlightId: response.data.id, type: "new" } });
         } catch (error) {
             toast.error("Error submitting form.");
         }

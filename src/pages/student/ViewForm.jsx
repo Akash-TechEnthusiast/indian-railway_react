@@ -4,6 +4,7 @@ import Navbar from "../../components/navbar/Navbar";
 import axiosInstance from "../../components/service_urls/AxiosInstance";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./viewform.scss";
+import { Chip } from "@mui/material";
 
 import {
     Box,
@@ -16,17 +17,20 @@ import {
     TableCell,
     TableBody,
     TableContainer,
-    Button
+    Button,
+    TextField
 } from "@mui/material";
 
 const ViewForm = () => {
     const [students, setStudents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
+    const [highlightedId, setHighlightedId] = useState(null);
+    const [highlightType, setHighlightType] = useState(null); // "new" or "edit"
+
     const location = useLocation();
     const navigate = useNavigate();
-
-    const [highlightedId, setHighlightedId] = useState(location.state?.highlightId || null);
 
     useEffect(() => {
         const fetchStudents = async () => {
@@ -34,9 +38,9 @@ const ViewForm = () => {
                 const response = await axiosInstance.get("/api/student/fetch_all_students");
                 let fetchedStudents = response.data;
 
-                // Move the highlighted student to the top
                 const highlightId = location.state?.highlightId;
                 if (highlightId) {
+                    setHighlightedId(highlightId);
                     const highlightedStudent = fetchedStudents.find(s => s.id === highlightId);
                     if (highlightedStudent) {
                         fetchedStudents = [
@@ -57,13 +61,19 @@ const ViewForm = () => {
         fetchStudents();
     }, [location.state]);
 
-    // Remove highlight after 5 seconds
     useEffect(() => {
         if (highlightedId) {
             const timer = setTimeout(() => setHighlightedId(null), 5000);
             return () => clearTimeout(timer);
         }
     }, [highlightedId]);
+
+    const filteredStudents = students.filter(student =>
+        student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        student.email.toLowerCase().includes(searchQuery.toLowerCase())
+        //||
+        // student.country.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     if (loading) {
         return (
@@ -83,9 +93,17 @@ const ViewForm = () => {
             <div className="homecontainer">
                 <Navbar />
                 <Box p={3}>
-                    <Typography variant="h4" align="center" gutterBottom>
-                        Student List
-                    </Typography>
+                    <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                        <Typography variant="h4">Student List</Typography>
+                        <TextField
+                            label="Search"
+                            variant="outlined"
+                            size="small"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            sx={{ width: 300 }}
+                        />
+                    </Box>
 
                     <TableContainer component={Paper} sx={{
                         maxHeight: 400,
@@ -108,19 +126,44 @@ const ViewForm = () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {students.map((student, index) => (
+                                {filteredStudents.map((student, index) => (
                                     <TableRow
-                                        key={index}
+                                        key={student.id}
                                         sx={
                                             student.id === highlightedId
                                                 ? {
                                                     backgroundColor: "#d1ffd6",
-                                                    transition: "background-color 1s ease",
+                                                    transition: "background-color 0.5s ease",
                                                 }
                                                 : {}
                                         }
                                     >
-                                        <TableCell>{student.name}</TableCell>
+
+
+
+
+
+
+
+                                        <TableCell>
+                                            {student.name}
+                                            {student.id === highlightedId && highlightType === "new" && (
+                                                <Chip
+                                                    label="New"
+                                                    size="small"
+                                                    color="success"
+                                                    sx={{ ml: 1 }}
+                                                />
+                                            )}
+                                            {student.id === highlightedId && highlightType === "edit" && (
+                                                <Chip
+                                                    label="Edited"
+                                                    size="small"
+                                                    color="info"
+                                                    sx={{ ml: 1 }}
+                                                />
+                                            )}
+                                        </TableCell>
                                         <TableCell>{student.email}</TableCell>
                                         <TableCell>{student.gender}</TableCell>
                                         <TableCell>{student.age}</TableCell>
