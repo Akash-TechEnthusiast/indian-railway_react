@@ -24,7 +24,10 @@ import {
     InputAdornment,
     Box,
     Tabs,
-    Tab
+    Tab,
+    Chip,
+    Rating,
+    Autocomplete,
 } from "@mui/material";
 import {
     Email,
@@ -55,6 +58,7 @@ const CreateForm = () => {
     });
 
     const [errors, setErrors] = useState({});
+    const skills = ["React", "Java", "Spring Boot", "Python"];
 
     const handleTabChange = (_, newValue) => setTabValue(newValue);
 
@@ -131,16 +135,70 @@ const CreateForm = () => {
                     <form onSubmit={handleSubmit}>
                         {tabValue === 0 && (
                             <Grid container spacing={2} mt={1}>
-                                <Grid item xs={12} md={4}>
-                                    <TextField label="Name" name="name" fullWidth size="small" value={formData.name} onChange={handleChange} error={!!errors.name} helperText={errors.name} />
+                                <Grid item xs={12} md={3}>
+                                    <TextField label="Fisr Name" name="name" fullWidth size="small" value={formData.name} onChange={handleChange} error={!!errors.name} helperText={errors.name} />
                                 </Grid>
-                                <Grid item xs={12} md={4}>
+                                <Grid item xs={12} md={3}>
+                                    <TextField label="Middle Name" name="name" fullWidth size="small" value={formData.name} onChange={handleChange} error={!!errors.name} helperText={errors.name} />
+                                </Grid>
+                                <Grid item xs={12} md={3}>
+                                    <TextField label="Last Name" name="name" fullWidth size="small" value={formData.name} onChange={handleChange} error={!!errors.name} helperText={errors.name} />
+                                </Grid>
+                                <Grid item xs={12} md={3}>
+                                    <TextField label="Aadhar No" name="name" fullWidth size="small" value={formData.name} onChange={handleChange} error={!!errors.name} helperText={errors.name} />
+                                </Grid>
+                                <Grid item xs={12} md={3}>
+                                    <TextField label="Pan No" name="name" fullWidth size="small" value={formData.name} onChange={handleChange} error={!!errors.name} helperText={errors.name} />
+                                </Grid>
+                                {/* URL Field */}
+                                <Grid item xs={12} md={3}>
+                                    <TextField
+                                        fullWidth
+                                        size="small"
+                                        type="url"
+                                        label="Website"
+                                        name="website"
+                                        value={formData.website}
+                                        onChange={handleChange}
+                                    />
+                                </Grid>
+                                {/* Time Field */}
+                                <Grid item xs={12} md={3}>
+                                    <TextField
+                                        fullWidth
+                                        type="time"
+                                        size="small"
+                                        label="Time"
+                                        name="time"
+                                        value={formData.time}
+                                        onChange={handleChange}
+                                        InputLabelProps={{ shrink: true }}
+                                    />
+                                </Grid>
+
+
+                                {/* DateTime Field */}
+                                <Grid item xs={12} md={3}>
+                                    <TextField
+                                        fullWidth
+                                        type="datetime-local"
+                                        size="small"
+                                        label="Date Time"
+                                        name="datetime"
+                                        value={formData.datetime}
+                                        onChange={handleChange}
+                                        InputLabelProps={{ shrink: true }}
+                                    />
+                                </Grid>
+
+
+                                <Grid item xs={12} md={3}>
                                     <TextField label="Email" name="email" type="email" fullWidth size="small" value={formData.email} onChange={handleChange} error={!!errors.email} helperText={errors.email} InputProps={{ startAdornment: (<InputAdornment position="start"><Email /></InputAdornment>) }} />
                                 </Grid>
-                                <Grid item xs={12} md={4}>
+                                <Grid item xs={12} md={3}>
                                     <TextField label="Password" name="password" type={showPassword ? "text" : "password"} fullWidth size="small" value={formData.password} onChange={handleChange} error={!!errors.password} helperText={errors.password} InputProps={{ endAdornment: (<InputAdornment position="end"><IconButton onClick={() => setShowPassword(!showPassword)}>{showPassword ? <VisibilityOff /> : <Visibility />}</IconButton></InputAdornment>) }} />
                                 </Grid>
-                                <Grid item xs={12} md={4}>
+                                <Grid item xs={12} md={3}>
                                     <FormControl fullWidth error={!!errors.gender}>
                                         <Typography>Gender</Typography>
                                         <RadioGroup row name="gender" value={formData.gender} onChange={handleChange}>
@@ -151,6 +209,43 @@ const CreateForm = () => {
                                         {errors.gender && <Typography color="error" variant="caption">{errors.gender}</Typography>}
                                     </FormControl>
                                 </Grid>
+
+                                {/* Color Picker */}
+                                <Grid item xs={12} md={3}>
+                                    <Typography>Select Color</Typography>
+                                    <input
+                                        type="color"
+                                        name="color"
+                                        value={formData.color}
+                                        onChange={handleChange}
+                                    />
+                                </Grid>
+
+                                {/* Autocomplete */}
+                                <Grid item xs={12} md={3}>
+                                    <Autocomplete
+                                        options={skills}
+                                        size="small"
+                                        onChange={(event, newValue) => {
+                                            setFormData({ ...formData, skill: newValue });
+                                        }}
+                                        renderInput={(params) => (
+                                            <TextField {...params} label="Skills" />
+                                        )}
+                                    />
+                                </Grid>
+                                {/* Rating */}
+                                <Grid item xs={12}>
+                                    <Typography>Rating</Typography>
+                                    <Rating
+                                        value={formData.rating}
+                                        size="small"
+                                        onChange={(event, newValue) => {
+                                            setFormData({ ...formData, rating: newValue });
+                                        }}
+                                    />
+                                </Grid>
+
                             </Grid>
                         )}
 
