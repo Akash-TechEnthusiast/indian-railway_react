@@ -57,7 +57,7 @@ export default function Register() {
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const [formData, setFormData] = useState({
-    userName: "",
+    username: "",
     password: "",
     confirmPassword: "",
     email: "",
@@ -65,7 +65,7 @@ export default function Register() {
   });
 
   const [formErrors, setFormErrors] = useState({
-    userName: "",
+    username: "",
     password: "",
     confirmPassword: "",
     email: "",
@@ -74,7 +74,7 @@ export default function Register() {
 
   const resetForm = () => {
     setFormData({
-      userName: "",
+      username: "",
       password: "",
       confirmPassword: "",
       email: "",
@@ -82,7 +82,7 @@ export default function Register() {
     });
 
     setFormErrors({
-      userName: "",
+      username: "",
       password: "",
       confirmPassword: "",
       email: "",
@@ -93,7 +93,7 @@ export default function Register() {
   const validate = () => {
     const errors = {};
 
-    if (!formData.userName.trim()) errors.userName = "Username is required";
+    if (!formData.username.trim()) errors.username = "Username is required";
     if (!formData.password) errors.password = "Password is required";
     if (!formData.confirmPassword) {
       errors.confirmPassword = "Please confirm your password";
@@ -237,13 +237,13 @@ export default function Register() {
                           <TextField
                             required
                             fullWidth
-                            id="userName"
+                            id="username"
                             label="Username"
-                            name="userName"
-                            value={formData.userName}
+                            name="username"
+                            value={formData.username}
                             onChange={handleChange}
-                            error={!!formErrors.userName}
-                            helperText={formErrors.userName}
+                            error={!!formErrors.username}
+                            helperText={formErrors.username}
 
 
                           />
