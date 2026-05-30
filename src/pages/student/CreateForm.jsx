@@ -166,12 +166,12 @@ const CreateForm = () => {
             <Sidebar />
             <div className="homecontainer">
                 <Navbar />
-                <Box sx={{ border: "3px solid #1976d2", borderRadius: "10px", p: 3, boxShadow: 2, position: "relative" }}>
+                <Box sx={{ border: "3px solid #1976d2", borderRadius: "10px", p: 10, boxShadow: 2, position: "relative" }}>
                     <Box
                         sx={{
                             position: "absolute",
-                            top: 0,
-                            right: 130,
+                            top: -2,      // Move closer to top border
+                            right: 100,    // Adjust distance from right side
                             textAlign: "center"
                         }}
                     >
@@ -188,17 +188,17 @@ const CreateForm = () => {
                                 variant="square"
                                 src={profileImage}
                                 sx={{
-                                    width: 130,
-                                    height: 100,
+                                    width: 140,
+                                    height: 150,   // Increased height
                                     cursor: "pointer",
                                     border: "2px solid #1976d2",
+                                    objectFit: "cover",
                                     "&:hover": {
                                         opacity: 0.8
                                     }
                                 }}
                             />
                         </label>
-
                     </Box>
                     <Typography variant="h4" align="center" mb={3}>Student Create Form</Typography>
                     <Tabs value={tabValue} onChange={handleTabChange} centered>
