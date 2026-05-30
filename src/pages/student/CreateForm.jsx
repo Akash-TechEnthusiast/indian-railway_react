@@ -90,11 +90,63 @@ const CreateForm = () => {
     const [tcFile, setTcFile] = useState(null);
     const [sscMemoFile, setSscMemoFile] = useState(null);
 
-    const handleProfileImageChange = (e) => {
-        const selectedFile = e.target.files[0];
+    const [profileFileId, setProfileFileId] = useState(null);
+    const [profileFileName, setProfileFileName] = useState("");
 
-        if (selectedFile) {
-            setProfileImage(URL.createObjectURL(selectedFile));
+    const [uploadedFiles, setUploadedFiles] = useState({
+        profile: null,
+        tc: null,
+        sscMemo: null
+    });
+
+    const [uploadedFileIds, setUploadedFileIds] = useState({
+        profile: null,
+        tc: null,
+        sscMemo: null
+    });
+
+
+    const handleFileUpload = async (e, fileType) => {
+
+        const file = e.target.files[0];
+
+        if (!file) return;
+
+        // Show preview only for profile photo
+        if (fileType === "profile") {
+            setProfileImage(URL.createObjectURL(file));
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+
+            const response = await axiosInstance.post(
+                "/api/file/upload",
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                }
+            );
+
+            setUploadedFiles(prev => ({
+                ...prev,
+                [fileType]: file.name
+            }));
+            const id = parseInt(response.data.match(/\d+/)[0]);
+
+            setUploadedFileIds(prev => ({
+                ...prev,
+                [fileType]: id
+            }));
+
+            console.log(`${fileType} uploaded`, id);
+
+        } catch (error) {
+            // console.error(error);
         }
     };
 
@@ -193,7 +245,7 @@ const CreateForm = () => {
                             id="profile-upload"
                             type="file"
                             hidden
-                            onChange={handleProfileImageChange}
+                            onChange={(e) => handleFileUpload(e, "profile")}
                         />
 
                         <label htmlFor="profile-upload">
@@ -312,7 +364,7 @@ const CreateForm = () => {
                                         fullWidth
                                         size="small"
                                         type="tel"
-                                        label="Student Phone"
+                                        label="Student Mobile"
                                         name="sphone"
                                         value={formData.phone}
                                         onChange={handleChange}
@@ -324,8 +376,21 @@ const CreateForm = () => {
                                         fullWidth
                                         size="small"
                                         type="tel"
-                                        label="Father Phone"
+                                        label="Father Mobile"
                                         name="fphone"
+                                        value={formData.phone}
+                                        onChange={handleChange}
+                                    />
+                                </Grid>
+
+                                {/* Phone Field */}
+                                <Grid item xs={12} md={3}>
+                                    <TextField
+                                        fullWidth
+                                        size="small"
+                                        type="tel"
+                                        label="Emergency Contac"
+                                        name="emergencyContac"
                                         value={formData.phone}
                                         onChange={handleChange}
                                     />
@@ -355,7 +420,7 @@ const CreateForm = () => {
 
 
                                 {/* Rating */}
-                                <Grid item xs={12}>
+                                <Grid item xs={12} md={3}>
                                     <Typography>Rating</Typography>
                                     <Rating
                                         value={formData.rating}
@@ -494,11 +559,11 @@ const CreateForm = () => {
                                 <Grid item xs={12} md={3}>
                                     <Button variant="contained" size="small" component="label" startIcon={<FileUpload />}>
                                         Upload TC
-                                        <input type="file" hidden onChange={handleTcFileChange} />
+                                        <input type="file" hidden onChange={(e) => handleFileUpload(e, "tc")} />
                                     </Button>
-                                    {tcFile && (
+                                    {uploadedFiles.tc && (
                                         <Box mt={1} display="flex" alignItems="center">
-                                            <Typography variant="body2" mr={1}>{tcFile.name}</Typography>
+                                            <Typography variant="body2" mr={1}>{uploadedFiles.tc}</Typography>
                                             <IconButton size="small" onClick={handleRemoveFile}><Delete color="error" /></IconButton>
                                         </Box>
                                     )}
@@ -506,11 +571,11 @@ const CreateForm = () => {
                                 <Grid item xs={12} md={3}>
                                     <Button variant="contained" size="small" component="label" startIcon={<FileUpload />}>
                                         Upload SCC Memo
-                                        <input type="file" hidden onChange={handleSscMemoFileChange} />
+                                        <input type="file" hidden onChange={(e) => handleFileUpload(e, "sscMemo")} />
                                     </Button>
-                                    {sscMemoFile && (
+                                    {uploadedFiles.sscMemo && (
                                         <Box mt={1} display="flex" alignItems="center">
-                                            <Typography variant="body2" mr={1}>{sscMemoFile.name}</Typography>
+                                            <Typography variant="body2" mr={1}>{uploadedFiles.sscMemo}</Typography>
                                             <IconButton size="small" onClick={handleRemoveFile}><Delete color="error" /></IconButton>
                                         </Box>
                                     )}
