@@ -5,6 +5,7 @@ import "./createform.scss";
 import axiosInstance from "../../components/service_urls/AxiosInstance";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { Avatar } from "@mui/material";
 import {
     TextField,
     Button,
@@ -44,6 +45,7 @@ const CreateForm = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [file, setFile] = useState(null);
     const navigate = useNavigate();
+    const [profileImage, setProfileImage] = useState(null);
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -80,6 +82,14 @@ const CreateForm = () => {
             ...formData,
             [name]: type === "checkbox" ? checked : value
         });
+    };
+
+    const handleProfileImageChange = (e) => {
+        const selectedFile = e.target.files[0];
+
+        if (selectedFile) {
+            setProfileImage(URL.createObjectURL(selectedFile));
+        }
     };
 
     const handleFileChange = (e) => {
@@ -156,7 +166,40 @@ const CreateForm = () => {
             <Sidebar />
             <div className="homecontainer">
                 <Navbar />
-                <Box sx={{ border: "3px solid #1976d2", borderRadius: "10px", p: 3, boxShadow: 2 }}>
+                <Box sx={{ border: "3px solid #1976d2", borderRadius: "10px", p: 3, boxShadow: 2, position: "relative" }}>
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            top: 0,
+                            right: 130,
+                            textAlign: "center"
+                        }}
+                    >
+                        <input
+                            accept="image/*"
+                            id="profile-upload"
+                            type="file"
+                            hidden
+                            onChange={handleProfileImageChange}
+                        />
+
+                        <label htmlFor="profile-upload">
+                            <Avatar
+                                variant="square"
+                                src={profileImage}
+                                sx={{
+                                    width: 130,
+                                    height: 100,
+                                    cursor: "pointer",
+                                    border: "2px solid #1976d2",
+                                    "&:hover": {
+                                        opacity: 0.8
+                                    }
+                                }}
+                            />
+                        </label>
+
+                    </Box>
                     <Typography variant="h4" align="center" mb={3}>Student Create Form</Typography>
                     <Tabs value={tabValue} onChange={handleTabChange} centered>
                         <Tab label="Basic Info" />
