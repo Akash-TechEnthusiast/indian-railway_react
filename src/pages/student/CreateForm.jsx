@@ -57,7 +57,16 @@ const CreateForm = () => {
         address: "",
         bloodGroup: "",
         religion: "",
-        castecategory: ""
+        castecategory: "",
+        pincode: "",
+        village: "",
+        state: "",
+        district: "",
+        mothername: "",
+        fathername: "",
+        aadharno: "",
+        panno: "",
+        schoolname: ""
     });
 
     const [errors, setErrors] = useState({});
@@ -95,6 +104,21 @@ const CreateForm = () => {
         if (!formData.bloodGroup) errors.bloodGroup = "bloodGroup is required";
         if (!formData.religion) errors.religion = "Religion is required";
         if (!formData.castecategory) errors.castecategory = "Category is required";
+
+        if (!formData.pincode) errors.pincode = "PinCode is required";
+        if (!formData.village) errors.village = "Village is required";
+        if (!formData.state) errors.state = "State is required";
+        if (!formData.district) errors.district = "District is required";
+
+        if (!formData.mothername) errors.mothername = "Mother Name is required";
+        if (!formData.fathername) errors.fathername = "Father Name is required";
+        if (!formData.aadharno) errors.aadharno = "Aadhar No is required";
+        if (!formData.panno) errors.panno = "Pan No is required";
+
+        if (!formData.schoolname) errors.schoolname = "School Name is required";
+
+
+
         if (!formData.agreeTerms) errors.agreeTerms = "You must accept terms";
         if (!formData.address.trim()) errors.address = "Address is required";
 
@@ -138,13 +162,14 @@ const CreateForm = () => {
                         <Tab label="Basic Info" />
                         <Tab label="Details" />
                         <Tab label="Address" />
+                        <Tab label="Certificates" />
                     </Tabs>
 
                     <form onSubmit={handleSubmit}>
                         {tabValue === 0 && (
                             <Grid container spacing={2} mt={1}>
                                 <Grid item xs={12} md={3}>
-                                    <TextField label="Fisr Name" name="name" fullWidth size="small" value={formData.name} onChange={handleChange} error={!!errors.name} helperText={errors.name} />
+                                    <TextField label="First Name" name="name" fullWidth size="small" value={formData.name} onChange={handleChange} error={!!errors.name} helperText={errors.name} />
                                 </Grid>
                                 <Grid item xs={12} md={3}>
                                     <TextField label="Middle Name" name="name" fullWidth size="small" value={formData.name} onChange={handleChange} error={!!errors.name} helperText={errors.name} />
@@ -153,10 +178,16 @@ const CreateForm = () => {
                                     <TextField label="Last Name" name="name" fullWidth size="small" value={formData.name} onChange={handleChange} error={!!errors.name} helperText={errors.name} />
                                 </Grid>
                                 <Grid item xs={12} md={3}>
-                                    <TextField label="Aadhar No" name="name" fullWidth size="small" value={formData.name} onChange={handleChange} error={!!errors.name} helperText={errors.name} />
+                                    <TextField label="Father Name" name="fathername" fullWidth size="small" value={formData.fathername} onChange={handleChange} error={!!errors.fathername} helperText={errors.fathername} />
                                 </Grid>
                                 <Grid item xs={12} md={3}>
-                                    <TextField label="Pan No" name="name" fullWidth size="small" value={formData.name} onChange={handleChange} error={!!errors.name} helperText={errors.name} />
+                                    <TextField label="Mother Name" name="mothername" fullWidth size="small" value={formData.mothername} onChange={handleChange} error={!!errors.mothername} helperText={errors.mothername} />
+                                </Grid>
+                                <Grid item xs={12} md={3}>
+                                    <TextField label="Aadhar No" name="aadharno" fullWidth size="small" value={formData.aadharno} onChange={handleChange} error={!!errors.aadharno} helperText={errors.aadharno} />
+                                </Grid>
+                                <Grid item xs={12} md={3}>
+                                    <TextField label="Pan No" name="panno" fullWidth size="small" value={formData.panno} onChange={handleChange} error={!!errors.panno} helperText={errors.panno} />
                                 </Grid>
                                 {/* URL Field */}
                                 <Grid item xs={12} md={3}>
@@ -206,6 +237,19 @@ const CreateForm = () => {
                                 <Grid item xs={12} md={3}>
                                     <TextField label="Password" name="password" type={showPassword ? "text" : "password"} fullWidth size="small" value={formData.password} onChange={handleChange} error={!!errors.password} helperText={errors.password} InputProps={{ endAdornment: (<InputAdornment position="end"><IconButton onClick={() => setShowPassword(!showPassword)}>{showPassword ? <VisibilityOff /> : <Visibility />}</IconButton></InputAdornment>) }} />
                                 </Grid>
+                                {/* Autocomplete */}
+                                <Grid item xs={12} md={3}>
+                                    <Autocomplete
+                                        options={skills}
+                                        size="small"
+                                        onChange={(event, newValue) => {
+                                            setFormData({ ...formData, skill: newValue });
+                                        }}
+                                        renderInput={(params) => (
+                                            <TextField {...params} label="Skills" />
+                                        )}
+                                    />
+                                </Grid>
                                 <Grid item xs={12} md={3}>
                                     <FormControl fullWidth error={!!errors.gender}>
                                         <Typography>Gender</Typography>
@@ -229,19 +273,7 @@ const CreateForm = () => {
                                     />
                                 </Grid>
 
-                                {/* Autocomplete */}
-                                <Grid item xs={12} md={3}>
-                                    <Autocomplete
-                                        options={skills}
-                                        size="small"
-                                        onChange={(event, newValue) => {
-                                            setFormData({ ...formData, skill: newValue });
-                                        }}
-                                        renderInput={(params) => (
-                                            <TextField {...params} label="Skills" />
-                                        )}
-                                    />
-                                </Grid>
+
                                 {/* Rating */}
                                 <Grid item xs={12}>
                                     <Typography>Rating</Typography>
@@ -259,14 +291,14 @@ const CreateForm = () => {
 
                         {tabValue === 1 && (
                             <Grid container spacing={2} mt={1}>
-                                <Grid item xs={12} md={4}>
+                                <Grid item xs={12} md={3}>
                                     <Typography>Age: {formData.age}</Typography>
                                     <Slider min={10} max={100} value={formData.age} onChange={handleSliderChange} />
                                 </Grid>
-                                <Grid item xs={12} md={4}>
+                                <Grid item xs={12} md={3}>
                                     <TextField label="Date of Birth" name="dob" type="date" fullWidth size="small" value={formData.dob} onChange={handleChange} error={!!errors.dob} helperText={errors.dob} InputLabelProps={{ shrink: true }} InputProps={{ startAdornment: (<InputAdornment position="start"><DateRange /></InputAdornment>) }} />
                                 </Grid>
-                                <Grid item xs={12} md={4}>
+                                <Grid item xs={12} md={3} fullWidth size="small">
                                     <Button variant="contained" size="small" component="label" startIcon={<FileUpload />}>
                                         Upload File
                                         <input type="file" hidden onChange={handleFileChange} />
@@ -283,17 +315,7 @@ const CreateForm = () => {
 
                         {tabValue === 2 && (
                             <Grid container spacing={2} mt={1}>
-                                <Grid item xs={12} md={3}>
-                                    <FormControl fullWidth error={!!errors.country} size="small" >
-                                        <InputLabel>Country</InputLabel>
-                                        <Select name="country" value={formData.country} onChange={handleChange} label="Country">
-                                            <MenuItem value="India">India</MenuItem>
-                                            <MenuItem value="USA">USA</MenuItem>
-                                            <MenuItem value="UK">UK</MenuItem>
-                                        </Select>
-                                        {errors.country && <Typography color="error" variant="caption">{errors.country}</Typography>}
-                                    </FormControl>
-                                </Grid>
+
                                 <Grid item xs={12} md={3}>
                                     <FormControl fullWidth error={!!errors.bloodGroup} size="small" >
                                         <InputLabel>Blood Group</InputLabel>
@@ -330,6 +352,48 @@ const CreateForm = () => {
                                         {errors.castecategory && <Typography color="error" variant="caption">{errors.castecategory}</Typography>}
                                     </FormControl>
                                 </Grid>
+                                <Grid item xs={12} md={3}>
+                                    <FormControl fullWidth error={!!errors.country} size="small" >
+                                        <InputLabel>Country</InputLabel>
+                                        <Select name="country" value={formData.country} onChange={handleChange} label="Country">
+                                            <MenuItem value="India">India</MenuItem>
+                                            <MenuItem value="USA">USA</MenuItem>
+                                            <MenuItem value="UK">UK</MenuItem>
+                                        </Select>
+                                        {errors.country && <Typography color="error" variant="caption">{errors.country}</Typography>}
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12} md={3}>
+                                    <FormControl fullWidth error={!!errors.state} size="small" >
+                                        <InputLabel>State</InputLabel>
+                                        <Select name="state" value={formData.state} onChange={handleChange} label="State">
+                                            <MenuItem value="Telengana">Telengana</MenuItem>
+                                            <MenuItem value="Ap">Ap</MenuItem>
+                                            <MenuItem value="Karnataka">Karnataka</MenuItem>
+                                        </Select>
+                                        {errors.state && <Typography color="error" variant="caption">{errors.state}</Typography>}
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12} md={3}>
+                                    <FormControl fullWidth error={!!errors.district} size="small" >
+                                        <InputLabel>District</InputLabel>
+                                        <Select name="district" value={formData.district} onChange={handleChange} label="District">
+                                            <MenuItem value="Wanaparthy">Wanaparthy</MenuItem>
+                                            <MenuItem value="Gadwal">Gadwal</MenuItem>
+                                            <MenuItem value="MahaboobNagar">MahaboobNagar</MenuItem>
+                                        </Select>
+                                        {errors.district && <Typography color="error" variant="caption">{errors.district}</Typography>}
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12} md={3}>
+                                    <TextField label="Village" name="village" fullWidth size="small" value={formData.village} onChange={handleChange} error={!!errors.village} helperText={errors.village} />
+                                </Grid>
+                                <Grid item xs={12} md={3}>
+                                    <TextField label="Pincode" name="pincode" fullWidth size="small" value={formData.pincode} onChange={handleChange} error={!!errors.pincode} helperText={errors.pincode} />
+                                </Grid>
+                                <Grid item xs={12} md={3}>
+                                    <TextField label="School Name" name="schoolname" fullWidth size="small" value={formData.schoolname} onChange={handleChange} error={!!errors.schoolname} helperText={errors.schoolname} />
+                                </Grid>
                                 <Grid item xs={12} md={6}>
                                     <TextField label="Address" name="address" fullWidth size="small" multiline rows={4} value={formData.address} onChange={handleChange} error={!!errors.address} helperText={errors.address} />
                                 </Grid>
@@ -340,6 +404,37 @@ const CreateForm = () => {
                                     <FormControlLabel control={<Checkbox name="agreeTerms" checked={formData.agreeTerms} onChange={handleChange} />} label="I agree to the terms and conditions" />
                                     {errors.agreeTerms && <Typography color="error" variant="caption">{errors.agreeTerms}</Typography>}
                                 </Grid>
+                            </Grid>
+                        )}
+
+                        {tabValue === 3 && (
+                            <Grid container spacing={2} mt={1}>
+                                <Grid item xs={12} md={3}>
+                                    <Button variant="contained" size="small" component="label" startIcon={<FileUpload />}>
+                                        Upload TC
+                                        <input type="file" hidden onChange={handleFileChange} />
+                                    </Button>
+                                    {file && (
+                                        <Box mt={1} display="flex" alignItems="center">
+                                            <Typography variant="body2" mr={1}>{file.name}</Typography>
+                                            <IconButton size="small" onClick={handleRemoveFile}><Delete color="error" /></IconButton>
+                                        </Box>
+                                    )}
+                                </Grid>
+                                <Grid item xs={12} md={3}>
+                                    <Button variant="contained" size="small" component="label" startIcon={<FileUpload />}>
+                                        Upload SCC Memo
+                                        <input type="file" hidden onChange={handleFileChange} />
+                                    </Button>
+                                    {file && (
+                                        <Box mt={1} display="flex" alignItems="center">
+                                            <Typography variant="body2" mr={1}>{file.name}</Typography>
+                                            <IconButton size="small" onClick={handleRemoveFile}><Delete color="error" /></IconButton>
+                                        </Box>
+                                    )}
+                                </Grid>
+
+
                             </Grid>
                         )}
 
