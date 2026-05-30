@@ -54,7 +54,10 @@ const CreateForm = () => {
         age: 18,
         dob: "",
         country: "",
-        address: ""
+        address: "",
+        bloodGroup: "",
+        religion: "",
+        castecategory: ""
     });
 
     const [errors, setErrors] = useState({});
@@ -89,8 +92,13 @@ const CreateForm = () => {
         if (!formData.gender) errors.gender = "Gender is required";
         if (!formData.dob) errors.dob = "Date of birth is required";
         if (!formData.country) errors.country = "Country is required";
+        if (!formData.bloodGroup) errors.bloodGroup = "bloodGroup is required";
+        if (!formData.religion) errors.religion = "Religion is required";
+        if (!formData.castecategory) errors.castecategory = "Category is required";
         if (!formData.agreeTerms) errors.agreeTerms = "You must accept terms";
         if (!formData.address.trim()) errors.address = "Address is required";
+
+
         return errors;
     };
 
@@ -275,8 +283,8 @@ const CreateForm = () => {
 
                         {tabValue === 2 && (
                             <Grid container spacing={2} mt={1}>
-                                <Grid item xs={12} md={6}>
-                                    <FormControl fullWidth error={!!errors.country}>
+                                <Grid item xs={12} md={3}>
+                                    <FormControl fullWidth error={!!errors.country} size="small" >
                                         <InputLabel>Country</InputLabel>
                                         <Select name="country" value={formData.country} onChange={handleChange} label="Country">
                                             <MenuItem value="India">India</MenuItem>
@@ -284,6 +292,42 @@ const CreateForm = () => {
                                             <MenuItem value="UK">UK</MenuItem>
                                         </Select>
                                         {errors.country && <Typography color="error" variant="caption">{errors.country}</Typography>}
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12} md={3}>
+                                    <FormControl fullWidth error={!!errors.bloodGroup} size="small" >
+                                        <InputLabel>Blood Group</InputLabel>
+                                        <Select name="bloodGroup" value={formData.bloodGroup} onChange={handleChange} label="Blood Group">
+                                            <MenuItem value="opos">O+</MenuItem>
+                                            <MenuItem value="oneg">O-</MenuItem>
+                                            <MenuItem value="abpos">AB+</MenuItem>
+                                            <MenuItem value="abneg">AB-</MenuItem>
+                                        </Select>
+                                        {errors.bloodGroup && <Typography color="error" variant="caption">{errors.bloodGroup}</Typography>}
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12} md={3}>
+                                    <FormControl fullWidth error={!!errors.religion} size="small" >
+                                        <InputLabel>Religion</InputLabel>
+                                        <Select name="religion" value={formData.religion} onChange={handleChange} label="Religion">
+                                            <MenuItem value="hindu">Hindu</MenuItem>
+                                            <MenuItem value="muslim">Muslim</MenuItem>
+                                            <MenuItem value="chri">Christan</MenuItem>
+                                            <MenuItem value="budha">Budha</MenuItem>
+                                        </Select>
+                                        {errors.religion && <Typography color="error" variant="caption">{errors.religion}</Typography>}
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12} md={3}>
+                                    <FormControl fullWidth error={!!errors.castecategory} size="small" >
+                                        <InputLabel>Category (SC/ST/OBC/General)</InputLabel>
+                                        <Select name="castecategory" value={formData.castecategory} onChange={handleChange} label="Category (SC/ST/OBC/General)">
+                                            <MenuItem value="sc">SC</MenuItem>
+                                            <MenuItem value="bc">BC</MenuItem>
+                                            <MenuItem value="oc">OC</MenuItem>
+                                            <MenuItem value="st">ST</MenuItem>
+                                        </Select>
+                                        {errors.castecategory && <Typography color="error" variant="caption">{errors.castecategory}</Typography>}
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={12} md={6}>
@@ -298,6 +342,8 @@ const CreateForm = () => {
                                 </Grid>
                             </Grid>
                         )}
+
+
 
                         <Grid item xs={12} mt={3} display="flex" justifyContent="center">
                             <Button type="submit" variant="contained" color="primary" startIcon={<Send />}>Submit</Button>
