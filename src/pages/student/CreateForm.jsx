@@ -46,6 +46,7 @@ const CreateForm = () => {
     const [file, setFile] = useState(null);
     const navigate = useNavigate();
     const [profileImage, setProfileImage] = useState(null);
+
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -74,6 +75,8 @@ const CreateForm = () => {
     const [errors, setErrors] = useState({});
     const skills = ["React", "Java", "Spring Boot", "Python"];
 
+
+
     const handleTabChange = (_, newValue) => setTabValue(newValue);
 
     const handleChange = (e) => {
@@ -83,6 +86,9 @@ const CreateForm = () => {
             [name]: type === "checkbox" ? checked : value
         });
     };
+
+    const [tcFile, setTcFile] = useState(null);
+    const [sscMemoFile, setSscMemoFile] = useState(null);
 
     const handleProfileImageChange = (e) => {
         const selectedFile = e.target.files[0];
@@ -94,6 +100,13 @@ const CreateForm = () => {
 
     const handleFileChange = (e) => {
         setFile(e.target.files[0]);
+    };
+    const handleTcFileChange = (e) => {
+        setTcFile(e.target.files[0]);
+    };
+
+    const handleSscMemoFileChange = (e) => {
+        setSscMemoFile(e.target.files[0]);
     };
 
     const handleRemoveFile = () => setFile(null);
@@ -293,6 +306,30 @@ const CreateForm = () => {
                                         )}
                                     />
                                 </Grid>
+                                {/* Phone Field */}
+                                <Grid item xs={12} md={3}>
+                                    <TextField
+                                        fullWidth
+                                        size="small"
+                                        type="tel"
+                                        label="Student Phone"
+                                        name="sphone"
+                                        value={formData.phone}
+                                        onChange={handleChange}
+                                    />
+                                </Grid>
+                                {/* Phone Field */}
+                                <Grid item xs={12} md={3}>
+                                    <TextField
+                                        fullWidth
+                                        size="small"
+                                        type="tel"
+                                        label="Father Phone"
+                                        name="fphone"
+                                        value={formData.phone}
+                                        onChange={handleChange}
+                                    />
+                                </Grid>
                                 <Grid item xs={12} md={3}>
                                     <FormControl fullWidth error={!!errors.gender}>
                                         <Typography>Gender</Typography>
@@ -328,6 +365,8 @@ const CreateForm = () => {
                                         }}
                                     />
                                 </Grid>
+
+
 
                             </Grid>
                         )}
@@ -455,11 +494,11 @@ const CreateForm = () => {
                                 <Grid item xs={12} md={3}>
                                     <Button variant="contained" size="small" component="label" startIcon={<FileUpload />}>
                                         Upload TC
-                                        <input type="file" hidden onChange={handleFileChange} />
+                                        <input type="file" hidden onChange={handleTcFileChange} />
                                     </Button>
-                                    {file && (
+                                    {tcFile && (
                                         <Box mt={1} display="flex" alignItems="center">
-                                            <Typography variant="body2" mr={1}>{file.name}</Typography>
+                                            <Typography variant="body2" mr={1}>{tcFile.name}</Typography>
                                             <IconButton size="small" onClick={handleRemoveFile}><Delete color="error" /></IconButton>
                                         </Box>
                                     )}
@@ -467,11 +506,11 @@ const CreateForm = () => {
                                 <Grid item xs={12} md={3}>
                                     <Button variant="contained" size="small" component="label" startIcon={<FileUpload />}>
                                         Upload SCC Memo
-                                        <input type="file" hidden onChange={handleFileChange} />
+                                        <input type="file" hidden onChange={handleSscMemoFileChange} />
                                     </Button>
-                                    {file && (
+                                    {sscMemoFile && (
                                         <Box mt={1} display="flex" alignItems="center">
-                                            <Typography variant="body2" mr={1}>{file.name}</Typography>
+                                            <Typography variant="body2" mr={1}>{sscMemoFile.name}</Typography>
                                             <IconButton size="small" onClick={handleRemoveFile}><Delete color="error" /></IconButton>
                                         </Box>
                                     )}
