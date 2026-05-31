@@ -70,7 +70,14 @@ const CreateForm = () => {
         fathername: "",
         aadharno: "",
         panno: "",
-        schoolname: ""
+        schoolname: "",
+
+        country: "",
+        state: "",
+        district: "",
+        profile: "",
+        tc: "",
+        sscMemo: "",
     });
 
 
@@ -119,6 +126,11 @@ const CreateForm = () => {
     const dropDownChange = async (event) => {
 
         const { name, value } = event.target;
+
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
 
         if (name === "country") {
 
@@ -196,6 +208,8 @@ const CreateForm = () => {
 
         if (!file) return;
 
+
+
         // Show preview only for profile photo
         if (fileType === "profile") {
             setProfileImage(URL.createObjectURL(file));
@@ -221,6 +235,12 @@ const CreateForm = () => {
                 [fileType]: file.name
             }));
             const id = parseInt(response.data.match(/\d+/)[0]);
+
+            setFormData(prev => ({
+                ...prev,
+                [fileType]: id
+            }));
+
 
             setUploadedFileIds(prev => ({
                 ...prev,
