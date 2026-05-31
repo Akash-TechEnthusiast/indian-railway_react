@@ -6,6 +6,7 @@ import axiosInstance from "../../components/service_urls/AxiosInstance";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { Avatar } from "@mui/material";
+import { useEffect } from "react";
 import {
     TextField,
     Button,
@@ -72,10 +73,20 @@ const CreateForm = () => {
         schoolname: ""
     });
 
-    const [errors, setErrors] = useState({});
+
     const skills = ["React", "Java", "Spring Boot", "Python"];
 
+    const [countries, setCountries] = useState([]);
+    const [states, setStates] = useState([]);
+    const [districts, setDistricts] = useState([]);
 
+    const [dropDownData, setDropDownData] = useState({
+        country: "",
+        state: "",
+        district: ""
+    });
+
+    const [errors, setErrors] = useState({});
 
     const handleTabChange = (_, newValue) => setTabValue(newValue);
 
@@ -85,6 +96,79 @@ const CreateForm = () => {
             ...formData,
             [name]: type === "checkbox" ? checked : value
         });
+    };
+
+    useEffect(() => {
+        loadCountries();
+    }, []);
+
+    const loadCountries = async () => {
+
+        try {
+
+            const response = await axiosInstance.get("/api/countries"
+            );
+
+            setCountries(response.data);
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const dropDownChange = async (event) => {
+
+        const { name, value } = event.target;
+
+        if (name === "country") {
+
+            setDropDownData(prev => ({
+                ...prev,
+                country: value,
+                state: "",
+                district: ""
+            }));
+
+            setStates([]);
+            setDistricts([]);
+
+            if (value) {
+
+                const response = await axiosInstance.get(
+                    `/api/states/country/${value}`
+                );
+
+                setStates(response.data);
+            }
+        }
+
+        else if (name === "state") {
+
+            setDropDownData(prev => ({
+                ...prev,
+                state: value,
+                district: ""
+            }));
+
+            setDistricts([]);
+
+            if (value) {
+
+                const response = await axiosInstance.get(
+                    `/api/districts/state/${value}`
+                );
+
+                setDistricts(response.data);
+            }
+        }
+
+        else {
+
+            setDropDownData(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        }
     };
 
     const [tcFile, setTcFile] = useState(null);
@@ -152,13 +236,6 @@ const CreateForm = () => {
 
     const handleFileChange = (e) => {
         setFile(e.target.files[0]);
-    };
-    const handleTcFileChange = (e) => {
-        setTcFile(e.target.files[0]);
-    };
-
-    const handleSscMemoFileChange = (e) => {
-        setSscMemoFile(e.target.files[0]);
     };
 
     const handleRemoveFile = () => setFile(null);
@@ -499,39 +576,131 @@ const CreateForm = () => {
                                         {errors.castecategory && <Typography color="error" variant="caption">{errors.castecategory}</Typography>}
                                     </FormControl>
                                 </Grid>
+
                                 <Grid item xs={12} md={3}>
-                                    <FormControl fullWidth error={!!errors.country} size="small" >
-                                        <InputLabel>Country</InputLabel>
-                                        <Select name="country" value={formData.country} onChange={handleChange} label="Country">
-                                            <MenuItem value="India">India</MenuItem>
-                                            <MenuItem value="USA">USA</MenuItem>
-                                            <MenuItem value="UK">UK</MenuItem>
+                                    <FormControl
+                                        fullWidth
+                                        size="small"
+                                        error={!!errors.country}
+                                    >
+                                        <InputLabel>
+                                            Country
+                                        </InputLabel>
+
+                                        <Select
+                                            name="country"
+                                            value={dropDownData.country}
+                                            onChange={dropDownChange}
+                                            label="Country"
+                                        >
+                                            {
+                                                countries.map(country => (
+                                                    <MenuItem
+                                                        key={country.id}
+                                                        value={country.id}
+                                                    >
+                                                        {country.name}
+                                                    </MenuItem>
+                                                ))
+                                            }
                                         </Select>
-                                        {errors.country && <Typography color="error" variant="caption">{errors.country}</Typography>}
+
+                                        {
+                                            errors.country &&
+                                            <Typography
+                                                color="error"
+                                                variant="caption"
+                                            >
+                                                {errors.country}
+                                            </Typography>
+                                        }
                                     </FormControl>
                                 </Grid>
+
                                 <Grid item xs={12} md={3}>
-                                    <FormControl fullWidth error={!!errors.state} size="small" >
-                                        <InputLabel>State</InputLabel>
-                                        <Select name="state" value={formData.state} onChange={handleChange} label="State">
-                                            <MenuItem value="Telengana">Telengana</MenuItem>
-                                            <MenuItem value="Ap">Ap</MenuItem>
-                                            <MenuItem value="Karnataka">Karnataka</MenuItem>
+                                    <FormControl
+                                        fullWidth
+                                        size="small"
+                                        error={!!errors.state}
+                                    >
+                                        <InputLabel>
+                                            State
+                                        </InputLabel>
+
+                                        <Select
+                                            name="state"
+                                            value={dropDownData.state}
+                                            onChange={dropDownChange}
+                                            label="State"
+                                            disabled={!dropDownData.country}
+                                        >
+                                            {
+                                                states.map(state => (
+                                                    <MenuItem
+                                                        key={state.id}
+                                                        value={state.id}
+                                                    >
+                                                        {state.name}
+                                                    </MenuItem>
+                                                ))
+                                            }
                                         </Select>
-                                        {errors.state && <Typography color="error" variant="caption">{errors.state}</Typography>}
+
+                                        {
+                                            errors.state &&
+                                            <Typography
+                                                color="error"
+                                                variant="caption"
+                                            >
+                                                {errors.state}
+                                            </Typography>
+                                        }
                                     </FormControl>
                                 </Grid>
+
                                 <Grid item xs={12} md={3}>
-                                    <FormControl fullWidth error={!!errors.district} size="small" >
-                                        <InputLabel>District</InputLabel>
-                                        <Select name="district" value={formData.district} onChange={handleChange} label="District">
-                                            <MenuItem value="Wanaparthy">Wanaparthy</MenuItem>
-                                            <MenuItem value="Gadwal">Gadwal</MenuItem>
-                                            <MenuItem value="MahaboobNagar">MahaboobNagar</MenuItem>
+                                    <FormControl
+                                        fullWidth
+                                        size="small"
+                                        error={!!errors.district}
+                                    >
+                                        <InputLabel>
+                                            District
+                                        </InputLabel>
+
+                                        <Select
+                                            name="district"
+                                            value={dropDownData.district}
+                                            onChange={dropDownChange}
+                                            label="District"
+                                            disabled={!dropDownData.state}
+                                        >
+                                            {
+                                                districts.map(district => (
+                                                    <MenuItem
+                                                        key={district.id}
+                                                        value={district.id}
+                                                    >
+                                                        {district.name}
+                                                    </MenuItem>
+                                                ))
+                                            }
                                         </Select>
-                                        {errors.district && <Typography color="error" variant="caption">{errors.district}</Typography>}
+
+                                        {
+                                            errors.district &&
+                                            <Typography
+                                                color="error"
+                                                variant="caption"
+                                            >
+                                                {errors.district}
+                                            </Typography>
+                                        }
                                     </FormControl>
                                 </Grid>
+
+
+
                                 <Grid item xs={12} md={3}>
                                     <TextField label="Village" name="village" fullWidth size="small" value={formData.village} onChange={handleChange} error={!!errors.village} helperText={errors.village} />
                                 </Grid>
