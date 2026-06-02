@@ -42,6 +42,7 @@ import {
 } from "@mui/icons-material";
 
 const CreateForm = () => {
+
     const [tabValue, setTabValue] = useState(0);
     const [showPassword, setShowPassword] = useState(false);
     const [file, setFile] = useState(null);
@@ -71,7 +72,6 @@ const CreateForm = () => {
         aadharno: "",
         panno: "",
         schoolname: "",
-
         country: "",
         state: "",
         district: "",
