@@ -76,6 +76,39 @@ const EditForm = () => {
                 setProfileImage(
                     `${axiosInstance.defaults.baseURL}/api/file/download/${response.data.profile}`
                 );
+
+
+                const tcresponse = await axiosInstance.get(
+                    `/api/file/${response.data.tc}`
+                );
+
+                const sscMemoresponse = await axiosInstance.get(
+                    `/api/file/${response.data.sscMemo}`
+                );
+
+
+                setUploadedFiles(prev => ({
+                    ...prev,
+                    tc: tcresponse.data.fileName
+                }));
+
+                setUploadedFileIds(prev => ({
+                    ...prev,
+                    tc: tcresponse.data.id
+                }));
+
+                setUploadedFiles(prev => ({
+                    ...prev,
+                    sscMemo: sscMemoresponse.data.fileName
+                }));
+
+                setUploadedFileIds(prev => ({
+                    ...prev,
+                    sscMemo: sscMemoresponse.data.id
+                }));
+
+
+
             } catch (err) {
                 toast.error("Failed to fetch student data");
             }
